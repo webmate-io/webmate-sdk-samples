@@ -78,11 +78,11 @@ public class SeleniumCrossbrowserTest {
     @Test
     public void multiBrowserTest() {
 
-        Browser referenceBrowser = new Browser("firefox", "47", "WINDOWS_7_64");
+        Browser referenceBrowser = new Browser("firefox", "61", "WINDOWS_10_64");
 
         List<Browser> crossBrowsers = ImmutableList.of(
-                new Browser("chrome", "59", "WINDOWS_7_64"),
-                new Browser("ie", "11", "WINDOWS_7_64")
+                new Browser("chrome", "67", "WINDOWS_10_64"),
+                new Browser("ie", "11", "WINDOWS_10_64")
         );
 
         // perform test for reference browser
@@ -125,63 +125,70 @@ public class SeleniumCrossbrowserTest {
 
         BrowserSessionRef browserSession = webmateSession.browserSession.getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
-        driver.get("http://www.examplepage.org/version/future");
+        try {
 
-        System.out.println("Selecting some elements....");
-        WebDriverWait wait = new WebDriverWait(driver, 20);
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
+            driver.get("http://www.examplepage.org/version/future");
 
-        browserSession.createState("after click");
+            System.out.println("Selecting some elements....");
+            WebDriverWait wait = new WebDriverWait(driver, 20);
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
 
-        System.out.println("Clicking on something that will redirect us...");
-        waitForElement(driver, "goto-examplepage").click();
+            browserSession.createState("after click");
 
-        String titleOfPage = driver.getTitle();
-        if (titleOfPage.equals("Cross Browser Issues Example")) {
-            System.out.println("Redirect was successful and we verified that :-) Going to Form-Interaction Test:");
-        } else {
-            throw new RuntimeException("The title of the page is not \'Cross Browser Issues Example\'");
+            System.out.println("Clicking on something that will redirect us...");
+            waitForElement(driver, "goto-examplepage").click();
+
+            String titleOfPage = driver.getTitle();
+            if (titleOfPage.equals("Cross Browser Issues Example")) {
+                System.out.println("Redirect was successful and we verified that :-) Going to Form-Interaction Test:");
+            } else {
+                throw new RuntimeException("The title of the page is not \'Cross Browser Issues Example\'");
+            }
+
+            driver.get("http://www.examplepage.org/form_interaction");
+
+            System.out.println("Click on link");
+            waitForElement(driver, "lk").click();
+
+
+            if (waitForElement(driver, ".success").getText().equals("Link Clicked!")) {
+                System.out.println("Click was successful");
+            } else {
+                throw new IllegalStateException("Click failed. Text was not \'Link Clicked!\' ");
+            }
+
+            browserSession.createState("after link");
+
+            System.out.println("Clicking on Button");
+            waitForElement(driver, "bn").click();
+
+            System.out.println("Clicking on Checkbox");
+            waitForElement(driver, "ck").click();
+
+            System.out.println("Clicking on RadioButton");
+            waitForElement(driver, "rd").click();
+
+            browserSession.createState("after radio button");
+
+            System.out.println("Clicking on Element with a Hover Event");
+            waitForElement(driver, "mover").click();
+
+            System.out.println("Entering some Text...");
+            waitForElement(driver, "text-input").click();
+            waitForElement(driver, "text-input").sendKeys("hubba");
+
+            System.out.println("Entering more Text...");
+            waitForElement(driver, "area").click();
+            waitForElement(driver, "area").sendKeys("hubba hub!");
+
+            System.out.println("Test done");
+
+            driver.quit();
+
+        } catch (Exception e) {
+            driver.quit();
+            throw e;
         }
-
-        driver.get("http://www.examplepage.org/form_interaction");
-
-        System.out.println("Click on link");
-        waitForElement(driver, "lk").click();
-
-
-        if (waitForElement(driver, ".success").getText().equals("Link Clicked!")) {
-            System.out.println("Click was successful");
-        } else {
-            throw new IllegalStateException("Click failed. Text was not \'Link Clicked!\' ");
-        }
-
-        browserSession.createState("after link");
-
-        System.out.println("Clicking on Button");
-        waitForElement(driver, "bn").click();
-
-        System.out.println("Clicking on Checkbox");
-        waitForElement(driver, "ck").click();
-
-        System.out.println("Clicking on RadioButton");
-        waitForElement(driver, "rd").click();
-
-        browserSession.createState("after radio button");
-
-        System.out.println("Clicking on Element with a Hover Event");
-        waitForElement(driver, "mover").click();
-
-        System.out.println("Entering some Text...");
-        waitForElement(driver, "text-input").click();
-        waitForElement(driver, "text-input").sendKeys("hubba");
-
-        System.out.println("Entering more Text...");
-        waitForElement(driver, "area").click();
-        waitForElement(driver, "area").sendKeys("hubba hub!");
-
-        System.out.println("Test done");
-
-        driver.quit();
 
         return browserSession.browserSessionId;
     }
