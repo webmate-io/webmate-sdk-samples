@@ -23,7 +23,7 @@
     <dependency>
       <groupId>com.testfabrik.webmate.sdk</groupId>
       <artifactId>java-sdk</artifactId>
-      <version>0.19</version>
+      <version>0.23</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
