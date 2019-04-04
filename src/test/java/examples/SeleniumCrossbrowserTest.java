@@ -1,5 +1,6 @@
 package examples;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.testfabrik.webmate.javasdk.ProjectId;
 import com.testfabrik.webmate.javasdk.WebmateAPISession;
@@ -8,7 +9,9 @@ import com.testfabrik.webmate.javasdk.WebmateEnvironment;
 import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
 import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
 import com.testfabrik.webmate.javasdk.jobs.JobRunId;
+import com.testfabrik.webmate.javasdk.jobs.JobRunSummary;
 import com.testfabrik.webmate.javasdk.jobs.jobconfigs.BrowserSessionCrossbrowserJobInput;
+import com.testfabrik.webmate.javasdk.testmgmt.TestResult;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,6 +102,17 @@ public class SeleniumCrossbrowserTest {
         // start crossbrowser layout comparison for browsersessions
         JobRunId jobRunId = webmateSession.jobEngine.startJob("SeleniumCrossbrowserTest-Example", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MY_WEBMATE_PROJECTID);
         System.out.println("Started Layout-Comparison-Job, ID of the JobRun is " + jobRunId);
+
+        // retrieve test results
+        JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);
+        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestId(), summary.getOptTestRunInfo().getIndex());
+
+        if (testResults.isPresent()) {
+            for (TestResult result : testResults.get()) {
+                System.out.println(result);
+            }
+        }
+
     }
 
     /**
