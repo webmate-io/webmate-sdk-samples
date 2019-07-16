@@ -2,7 +2,6 @@ package examples;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.testfabrik.webmate.javasdk.ProjectId;
 import com.testfabrik.webmate.javasdk.WebmateAPISession;
 import com.testfabrik.webmate.javasdk.WebmateAuthInfo;
 import com.testfabrik.webmate.javasdk.WebmateEnvironment;
@@ -18,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -29,14 +27,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 /**
  * Simple test showing how to perform a Selenium based crossbrowser test using webmate.
  */
 @RunWith(JUnit4.class)
-public class SeleniumCrossbrowserTest extends Commons {
+public class SeleniumTest extends Commons {
 
     private WebmateAPISession webmateSession;
 
@@ -53,46 +50,8 @@ public class SeleniumCrossbrowserTest extends Commons {
 
 
     @Test
-    public void multiBrowserTest() {
-
-        Browser referenceBrowser = new Browser("firefox", "61", "WINDOWS_10_64");
-
-        List<Browser> crossBrowsers = ImmutableList.of(
-                new Browser("chrome", "67", "WINDOWS_10_64"),
-                new Browser("ie", "11", "WINDOWS_10_64")
-        );
-
-        // perform test for reference browser
-        BrowserSessionId referenceSession = performTest(referenceBrowser);
-
-        // Perform tests for cross browsers and collect corresponding BrowserSessions.
-        List<BrowserSessionId> crossbrowserSessions = new ArrayList<>();
-
-        for (Browser crossbrowser : crossBrowsers) {
-            BrowserSessionId browserSessionId = performTest(crossbrowser);
-            crossbrowserSessions.add(browserSessionId);
-        }
-
-        // start crossbrowser layout comparison for browsersessions
-        JobRunId jobRunId = webmateSession.jobEngine.startJob("SeleniumCrossbrowserTest-Example", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MyCredentials.MY_WEBMATE_PROJECTID);
-        System.out.println("Started Layout-Comparison-Job, ID of the JobRun is " + jobRunId);
-
-        // retrieve test results
-        JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);
-        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestId(), summary.getOptTestRunInfo().getIndex());
-
-        if (testResults.isPresent()) {
-            for (TestResult result : testResults.get()) {
-                System.out.println(result);
-            }
-        }
-
-    }
-
-    /**
-     * Simple interaction with a web page.
-     */
-    public BrowserSessionId performTest(Browser browser) {
+    public void performTest() {
+        Browser browser = new Browser("FIREFOX", "65", "WINDOWS_10_64");
 
         System.out.println("Executing test with browser " + browser);
 
@@ -122,7 +81,6 @@ public class SeleniumCrossbrowserTest extends Commons {
             WebDriverWait wait = new WebDriverWait(driver, 20);
             wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
 
-            browserSession.createState("after click");
 
             System.out.println("Clicking on something that will redirect us...");
             waitForElement(driver, "goto-examplepage").click();
@@ -146,8 +104,6 @@ public class SeleniumCrossbrowserTest extends Commons {
                 throw new IllegalStateException("Click failed. Text was not \'Link Clicked!\' ");
             }
 
-            browserSession.createState("after link");
-
             System.out.println("Clicking on Button");
             waitForElement(driver, "bn").click();
 
@@ -156,8 +112,6 @@ public class SeleniumCrossbrowserTest extends Commons {
 
             System.out.println("Clicking on RadioButton");
             waitForElement(driver, "rd").click();
-
-            browserSession.createState("after radio button");
 
             System.out.println("Clicking on Element with a Hover Event");
             waitForElement(driver, "mover").click();
@@ -178,8 +132,6 @@ public class SeleniumCrossbrowserTest extends Commons {
             driver.quit();
             throw e;
         }
-
-        return browserSession.browserSessionId;
     }
 }
 
