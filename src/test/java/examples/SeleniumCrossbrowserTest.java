@@ -79,7 +79,7 @@ public class SeleniumCrossbrowserTest extends Commons {
 
         // retrieve test results
         JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);
-        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestId(), summary.getOptTestRunInfo().getIndex());
+        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId());
 
         if (testResults.isPresent()) {
             for (TestResult result : testResults.get()) {
