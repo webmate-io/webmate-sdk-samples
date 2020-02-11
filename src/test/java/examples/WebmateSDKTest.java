@@ -8,35 +8,39 @@ import com.testfabrik.webmate.javasdk.WebmateAuthInfo;
 import com.testfabrik.webmate.javasdk.WebmateEnvironment;
 import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
 import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
+import com.testfabrik.webmate.javasdk.devices.DeviceId;
+import com.testfabrik.webmate.javasdk.devices.DeviceTemplate;
 import com.testfabrik.webmate.javasdk.jobs.JobRunId;
 import com.testfabrik.webmate.javasdk.jobs.JobRunSummary;
 import com.testfabrik.webmate.javasdk.jobs.jobconfigs.BrowserSessionCrossbrowserJobInput;
+import com.testfabrik.webmate.javasdk.mailtest.TestMail;
+import com.testfabrik.webmate.javasdk.mailtest.TestMailAddress;
+import com.testfabrik.webmate.javasdk.testmgmt.ArtifactInfo;
+import com.testfabrik.webmate.javasdk.testmgmt.ArtifactType;
 import com.testfabrik.webmate.javasdk.testmgmt.TestResult;
-import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
+import static org.junit.Assert.fail;
 
 
 /**
  * Simple test showing how to perform a Selenium based crossbrowser test using webmate.
  */
 @RunWith(JUnit4.class)
-public class SeleniumCrossbrowserTest extends Commons {
+public class WebmateSDKTest extends Commons {
 
     private WebmateAPISession webmateSession;
 
@@ -45,12 +49,6 @@ public class SeleniumCrossbrowserTest extends Commons {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create());
     }
-
-
-    @After
-    public void teardown() {
-    }
-
 
     @Test
     public void multiBrowserTest() {
@@ -65,6 +63,18 @@ public class SeleniumCrossbrowserTest extends Commons {
         // perform test for reference browser
         BrowserSessionId referenceSession = performTest(referenceBrowser);
 
+        // Query all screenshot artifacts made during the test on the reference browser
+        Set<ArtifactType> artifactsToQuery = new HashSet<>();
+        artifactsToQuery.add(ArtifactType.fromString("Page.FullpageScreenshot"));
+
+        List<ArtifactInfo> artifacts = webmateSession.artifact.queryArtifacts(MyCredentials.MY_WEBMATE_PROJECTID, referenceSession, artifactsToQuery);
+        System.out.println("Found " + artifacts.size() + " screenshot artifacts for session " + referenceSession);
+        for (ArtifactInfo i : artifacts) {
+            System.out.println(i);
+        }
+        System.out.println();
+
+
         // Perform tests for cross browsers and collect corresponding BrowserSessions.
         List<BrowserSessionId> crossbrowserSessions = new ArrayList<>();
 
@@ -74,19 +84,76 @@ public class SeleniumCrossbrowserTest extends Commons {
         }
 
         // start crossbrowser layout comparison for browsersessions
-        JobRunId jobRunId = webmateSession.jobEngine.startJob("SeleniumCrossbrowserTest-Example", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MyCredentials.MY_WEBMATE_PROJECTID);
-        System.out.println("Started Layout-Comparison-Job, ID of the JobRun is " + jobRunId);
+        JobRunId jobRunId = webmateSession.jobEngine.startJob("WebmateSDKTest-Example", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MyCredentials.MY_WEBMATE_PROJECTID);
+        System.out.println("Started Layout-Comparison-Job, ID of the JobRun is " + jobRunId + "\n");
 
         // retrieve test results
         JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);
+
+        try {
+            // Wait a few seconds until the first test results are available
+            Thread.sleep(3000);
+            // Wait until the number of results doesn't change anymore. This is an indication that the test is finished
+            Util.waitUntilStable(() -> webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId()).or(new ArrayList<>()).size(), 500);
+        } catch(Exception e) {
+            System.err.println("An error occured while waiting for test results");
+            e.printStackTrace();
+            fail();
+        }
+
         Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId());
 
         if (testResults.isPresent()) {
+            System.out.println("Got " + testResults.get().size() + " test results");
             for (TestResult result : testResults.get()) {
                 System.out.println(result);
             }
+            System.out.println();
         }
 
+        // Create a test mail address in the current test run
+        TestMailAddress address = webmateSession.mailTest.createTestMailAddress(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());
+        System.out.println("Generated test mail address: " + address);
+        // Get all email received for the current test run. In this case there are no emails
+        List<TestMail> mails = webmateSession.mailTest.getMailsInTestRun(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());
+        Assert.assertEquals(mails.size(), 0);
+    }
+
+    @Test
+    public void deviceTest() {
+        // count devices currently deployed
+        List<DeviceId> existingDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
+        int baseNumberDevices = existingDevices.size();
+        System.out.println("Found existing devices " + existingDevices);
+
+        // get templates
+        List<DeviceTemplate> templates = new ArrayList<>(webmateSession.device.getDeviceTemplatesForProject(MyCredentials.MY_WEBMATE_PROJECTID));
+        System.out.println("Found " + templates.size() + " templates");
+
+        // Select some win-10 template
+        DeviceTemplate winTemplate = templates.stream().filter(t -> t.getName().contains("win-10")).findFirst().get();
+        System.out.println("Will deploy template " + winTemplate.getName());
+
+        // deploy new device
+        webmateSession.device.requestDeviceByTemplate(MyCredentials.MY_WEBMATE_PROJECTID, winTemplate.getId());
+        System.out.println("Deploying...");
+
+        // check if device has been deployed
+        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices + 1, 60000);
+
+        // Find id of new device
+        List<DeviceId> newDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
+        System.out.println("Currently deployed devices: " + newDevices);
+        DeviceId newId = newDevices.stream().filter(id -> !existingDevices.contains(id)).findFirst().get();
+
+        // delete device
+        System.out.println("Going to delete device " + newId);
+        webmateSession.device.releaseDevice(newId);
+        System.out.println("Deleting...");
+
+        // check if device has been deleted
+        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices, 60000);
+        System.out.println("Successfully deleted device");
     }
 
     /**
@@ -170,7 +237,7 @@ public class SeleniumCrossbrowserTest extends Commons {
             waitForElement(driver, "area").click();
             waitForElement(driver, "area").sendKeys("hubba hub!");
 
-            System.out.println("Test done");
+            System.out.println("Test done\n");
 
             driver.quit();
 
