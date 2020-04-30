@@ -56,8 +56,7 @@ public class WebmateSDKTest extends Commons {
         Browser referenceBrowser = new Browser("firefox", "61", "WINDOWS_10_64");
 
         List<Browser> crossBrowsers = ImmutableList.of(
-                new Browser("chrome", "67", "WINDOWS_10_64"),
-                new Browser("ie", "11", "WINDOWS_10_64")
+                new Browser("chrome", "67", "WINDOWS_10_64")
         );
 
         // perform test for reference browser
