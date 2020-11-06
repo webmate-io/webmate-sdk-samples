@@ -2,10 +2,8 @@ package examples;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.testfabrik.webmate.javasdk.Tag;
-import com.testfabrik.webmate.javasdk.WebmateAPISession;
-import com.testfabrik.webmate.javasdk.WebmateAuthInfo;
-import com.testfabrik.webmate.javasdk.WebmateEnvironment;
+import com.testfabrik.webmate.javasdk.*;
+import com.testfabrik.webmate.javasdk.Browser;
 import com.testfabrik.webmate.javasdk.devices.DeviceId;
 import com.testfabrik.webmate.javasdk.devices.DevicePropertyName;
 import com.testfabrik.webmate.javasdk.devices.DeviceRequest;
@@ -27,7 +25,7 @@ import static org.junit.Assert.fail;
 
 
 /**
- * Simple test showing how to perform a Selenium based crossbrowser test using webmate.
+ * Simple test showing how to perform a cross browser test using webmate.
  */
 @RunWith(JUnit4.class)
 public class WebmateSDKTest extends Commons {
@@ -43,11 +41,11 @@ public class WebmateSDKTest extends Commons {
     @Test
     public void crossBrowserTest() {
         // Specify the reference browser
-        BrowserSpec referenceBrowser = new BrowserSpec("firefox", "61", new Platform("windows", "10"));
+        Browser referenceBrowser = new Browser(BrowserType.Firefox, "61", new Platform("windows", "10"));
         BrowserSpecification referenceBrowserSpecification = new BrowserSpecification(referenceBrowser);
         // Specify the browsers that should be compared to the reference browser
         List<BrowserSpecification> crossBrowserSpecifications = ImmutableList.of(
-                new BrowserSpecification(new BrowserSpec("chrome", "67", new Platform("windows", "10")))
+                new BrowserSpecification(new Browser(BrowserType.Chrome, "67", new Platform("windows", "10")))
         );
 
         // Specify the urls under test
@@ -97,7 +95,7 @@ public class WebmateSDKTest extends Commons {
         deviceProperties.put(DevicePropertyName.Platform, "WINDOWS_10_64");
         DeviceRequirements deviceRequirements = new DeviceRequirements(deviceProperties);
         DeviceRequest deviceRequest = new DeviceRequest(windows10Request, deviceRequirements);
-        webmateSession.device.requestDeviceByCapabilities(MyCredentials.MY_WEBMATE_PROJECTID, deviceRequest);
+        webmateSession.device.requestDeviceByRequirements(MyCredentials.MY_WEBMATE_PROJECTID, deviceRequest);
 
         // Check if device has been deployed
         Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices + 1, 60000);
