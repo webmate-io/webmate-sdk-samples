@@ -58,12 +58,12 @@ public class SeleniumBasedRegressionTest extends Commons {
 
     private static final String REFERENCE_FILENAME = "webmate_referencesession_id.txt";
 
-    private static final String BROWSERTYPE = "CHROME";
+    private static final BrowserType BROWSERTYPE = BrowserType.Chrome;
     private static final String BROWSERVERSION = "83";
-    private static final String PLATFORM = "WINDOWS_10_64";
+    private static final Platform PLATFORM = new Platform("WINDOWS", "10", "64");
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
@@ -122,12 +122,12 @@ public class SeleniumBasedRegressionTest extends Commons {
     public BrowserSessionId executeTest() throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("browserName", BROWSERTYPE);
+        caps.setCapability("browserName", BROWSERTYPE.getValue());
         caps.setCapability("version", BROWSERVERSION);
-        caps.setCapability("platform", PLATFORM);
-        caps.setCapability("apikey", MY_WEBMATE_APIKEY_TFRED);
-        caps.setCapability("email", MY_WEBMATE_USERNAME_TFRED);
-        caps.setCapability("project", MY_WEBMATE_PROJECTID_TFRED.toString());
+        caps.setCapability("platform", PLATFORM.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
 

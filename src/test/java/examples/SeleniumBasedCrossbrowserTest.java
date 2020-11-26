@@ -2,6 +2,7 @@ package examples;
 
 import com.google.common.collect.ImmutableList;
 import com.testfabrik.webmate.javasdk.*;
+import com.testfabrik.webmate.javasdk.Browser;
 import com.testfabrik.webmate.javasdk.browsersession.*;
 import com.testfabrik.webmate.javasdk.testmgmt.*;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
@@ -32,7 +33,7 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
@@ -42,8 +43,9 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
 
     @Test
     public void performTest() throws MalformedURLException {
-        BrowserSessionId chromeSessionId = executeTestInBrowser("CHROME", "83", "WINDOWS_10_64");
-        BrowserSessionId firefoxSessionId = executeTestInBrowser("FIREFOX", "81", "WINDOWS_10_64");
+        Platform platform = new Platform("WINDOWS", "10", "64");
+        BrowserSessionId chromeSessionId = executeTestInBrowser(new Browser(BrowserType.Chrome, "83", platform));
+        BrowserSessionId firefoxSessionId = executeTestInBrowser(new Browser(BrowserType.Firefox, "81", platform));
 
         TestRun testRun = webmateSession.testMgmt.startExecution(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
            "Example cross-browser comparison",
@@ -63,17 +65,15 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
                 testRunInfo.getProjectId().toString() + "/testlab/testruns/" + testRunInfo.getTestRunId());
     }
 
-    public BrowserSessionId executeTestInBrowser(String browserName, String browserVersion,
-                                                 String browserPlatform) throws MalformedURLException {
+    public BrowserSessionId executeTestInBrowser(Browser browser) throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setCapability("browserName", "CHROME");
-        caps.setCapability("browserName", browserName);
-        caps.setCapability("version", browserVersion);
-        caps.setCapability("platform", browserPlatform);
-        caps.setCapability("apikey", MY_WEBMATE_APIKEY_TFRED);
-        caps.setCapability("email", MY_WEBMATE_USERNAME_TFRED);
-        caps.setCapability("project", MY_WEBMATE_PROJECTID_TFRED.toString());
+        caps.setCapability("browserName", browser.getBrowserType().getValue());
+        caps.setCapability("version", browser.getVersion());
+        caps.setCapability("platform", browser.getPlatform().toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
 
