@@ -43,7 +43,7 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
 
     @Test
     public void performTest() throws MalformedURLException {
-        Platform platform = new Platform("WINDOWS", "10", "64");
+        Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
         BrowserSessionId chromeSessionId = executeTestInBrowser(new Browser(BrowserType.Chrome, "83", platform));
         BrowserSessionId firefoxSessionId = executeTestInBrowser(new Browser(BrowserType.Firefox, "81", platform));
 

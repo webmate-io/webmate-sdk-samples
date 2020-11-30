@@ -60,7 +60,7 @@ public class SeleniumBasedRegressionTest extends Commons {
 
     private static final BrowserType BROWSERTYPE = BrowserType.Chrome;
     private static final String BROWSERVERSION = "83";
-    private static final Platform PLATFORM = new Platform("WINDOWS", "10", "64");
+    private static final Platform PLATFORM = new Platform(PlatformType.WINDOWS, "10", "64");
 
     @Before
     public void setup() {
