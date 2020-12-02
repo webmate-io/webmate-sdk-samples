@@ -158,8 +158,8 @@ public class SeleniumBasedRegressionTest extends Commons {
             System.out.println("Clicking on Button");
             waitForElement(driver, "bn").click();
 
-            System.out.println("Clicking on Checkbox");
-            waitForElement(driver, "ck").click();
+//            System.out.println("Clicking on Checkbox");
+//            waitForElement(driver, "ck").click();
 
             System.out.println("Clicking on RadioButton");
             waitForElement(driver, "rd").click();
