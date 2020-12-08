@@ -53,9 +53,9 @@ public class SeleniumTest extends Commons {
         caps.setCapability("browserName", browserName);
         caps.setCapability("version", browserVersion);
         caps.setCapability("platform", browserPlatform);
-        caps.setCapability("apikey", MY_WEBMATE_APIKEY_TFRED);
-        caps.setCapability("email", MY_WEBMATE_USERNAME_TFRED);
-        caps.setCapability("project", MY_WEBMATE_PROJECTID_TFRED.toString());
+        caps.setCapability("apikey", MY_WEBMATE_APIKEY);
+        caps.setCapability("email", MY_WEBMATE_USERNAME);
+        caps.setCapability("project", MY_WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:autoScreenshots", true);
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
