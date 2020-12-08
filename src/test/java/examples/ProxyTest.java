@@ -18,9 +18,9 @@ import java.util.Map;
 public class ProxyTest {
 
     @Test
-    public void testWithProxyWebdriver() {
+    public void testSdkWithProxy() {
 
-        String PROXY_HOST = "proxyhost";
+        String PROXY_HOST = "localhost";
         int PROXY_PORT = 3128;
         String PROXY_USER_DOMAIN = "userdomain";
         String PROXY_USER = "proxyuser";
@@ -29,14 +29,27 @@ public class ProxyTest {
         WebmateAPISession apiSession = sessionWithNoAuthProxy(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
                 WebmateEnvironment.create(), PROXY_HOST, PROXY_PORT);
 
-//        WebmateAPISession apiSession = sessionWithAuthProxy(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
+//        WebmateAPISession apiSession = sessionWithAuthProxyUsernamePassword(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
+//                WebmateEnvironment.create(), PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD);
+
+//        WebmateAPISession apiSession = sessionWithAuthProxyNTLM(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
 //                WebmateEnvironment.create(), PROXY_HOST, PROXY_PORT, PROXY_USER_DOMAIN, PROXY_USER, PROXY_PASSWORD);
 
         apiSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID);
     }
 
+    public WebmateAPISession sessionWithAuthProxyUsernamePassword(WebmateAuthInfo authInfo, WebmateEnvironment env, String proxyHost, int proxyPort,
+                                                  String proxyUser, String proxyPassword) {
+        HttpClientBuilder builder = HttpClientBuilder.create();
+        HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(proxyUser, proxyPassword));
+        builder.setProxy(proxy);
+        builder.setDefaultCredentialsProvider(credsProvider);
+        return new WebmateAPISession(authInfo, env, builder);
+    }
 
-    public WebmateAPISession sessionWithAuthProxy(WebmateAuthInfo authInfo, WebmateEnvironment env, String proxyHost, int proxyPort, String proxyUserDomain,
+    public WebmateAPISession sessionWithAuthProxyNTLM(WebmateAuthInfo authInfo, WebmateEnvironment env, String proxyHost, int proxyPort, String proxyUserDomain,
                                               String proxyUser, String proxyPassword) {
         HttpClientBuilder builder = HttpClientBuilder.create();
         HttpHost proxy = new HttpHost(proxyHost, proxyPort);
