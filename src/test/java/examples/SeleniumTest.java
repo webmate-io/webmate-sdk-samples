@@ -3,6 +3,7 @@ package examples;
 import com.google.common.collect.ImmutableList;
 import com.testfabrik.webmate.javasdk.*;
 import com.testfabrik.webmate.javasdk.browsersession.*;
+import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 import com.testfabrik.webmate.javasdk.testmgmt.*;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
 import org.junit.Before;
@@ -59,7 +60,8 @@ public class SeleniumTest extends Commons {
         caps.setCapability("wm:autoScreenshots", true);
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
-        webmateSession.addSeleniumSession(driver.getSessionId().toString());
+
+        WebmateSeleniumSession seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
 
         BrowserSessionRef browserSession = webmateSession.browserSession
                 .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
@@ -117,6 +119,7 @@ public class SeleniumTest extends Commons {
         } catch(Throwable e) {
             e.printStackTrace();
         } finally {
+            seleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
             driver.quit();
         }
 
