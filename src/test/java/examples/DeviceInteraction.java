@@ -30,8 +30,7 @@ public class DeviceInteraction {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-//                WebmateEnvironment.create(),
-                WebmateEnvironment.create(URI.create("http://localhost:8876/v1")),
+                WebmateEnvironment.create(),
                 MY_WEBMATE_PROJECTID
         );
     }
