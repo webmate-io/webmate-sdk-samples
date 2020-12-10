@@ -1,6 +1,5 @@
 package examples;
 
-import com.google.common.collect.ImmutableList;
 import com.testfabrik.webmate.javasdk.*;
 import com.testfabrik.webmate.javasdk.browsersession.*;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
@@ -15,7 +14,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -50,7 +48,6 @@ public class SeleniumTest extends Commons {
                                                  String browserPlatform) throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setCapability("browserName", "CHROME");
         caps.setCapability("browserName", browserName);
         caps.setCapability("version", browserVersion);
         caps.setCapability("platform", browserPlatform);
@@ -58,6 +55,8 @@ public class SeleniumTest extends Commons {
         caps.setCapability("email", MY_WEBMATE_USERNAME);
         caps.setCapability("project", MY_WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:autoScreenshots", true);
+        caps.setCapability("wm:name", "A sample selenium test");
+        caps.setCapability("wm:tags", "Sprint 34, Hello World");
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
 
@@ -71,7 +70,6 @@ public class SeleniumTest extends Commons {
 
             System.out.println("Selecting some elements....");
             WebDriverWait wait = new WebDriverWait(driver, 20);
-//        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
 
             browserSession.createState("after click");
 
