@@ -1,0 +1,357 @@
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n\n  <groupId>com.testfabrik.webmate.examples</groupId>\n  <artifactId>webmate-examples</artifactId>\n  <version>1.0-SNAPSHOT</version>\n\n  <properties>\n    <version.selenium>3.141.59</version.selenium>\n    <version.slf4j>1.7.25</version.slf4j>\n    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n  </properties>\n\n  <dependencies>\n    <dependency>\n      <groupId>org.seleniumhq.selenium</groupId>\n      <artifactId>selenium-java</artifactId>\n      <version>${version.selenium}</version>\n    </dependency>\n    <dependency>\n      <groupId>com.testfabrik.webmate.sdk</groupId>\n      <artifactId>java-sdk</artifactId>\n      <version>0.28.0</version>\n    </dependency>\n    <dependency>\n      <groupId>junit</groupId>\n      <artifactId>junit</artifactId>\n      <version>4.8.1</version>\n      <scope>test</scope>\n    </dependency>\n\n    <dependency>\n      <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-nop -->\n      <groupId>org.slf4j</groupId>\n      <artifactId>slf4j-nop</artifactId>\n      <version>${version.slf4j}</version>\n      <scope>test</scope>\n    </dependency>\n\n  </dependencies>\n\n  <build>\n    <plugins>\n      <plugin>\n        <groupId>org.apache.maven.plugins</groupId>\n        <artifactId>maven-compiler-plugin</artifactId>\n        <version>3.6.2</version>\n        <configuration>\n          <source>1.8</source>\n          <target>1.8</target>\n        </configuration>\n        <executions>\n          <execution>\n            <phase>compile</phase>\n            <goals>\n              <goal>compile</goal>\n            </goals>\n          </execution>\n        </executions>\n      </plugin>\n      <plugin>\n        <artifactId>maven-surefire-plugin</artifactId>\n        <version>2.19.1</version>\n        <configuration>\n          <excludes>\n          </excludes>\n        </configuration>\n      </plugin>\n    </plugins>\n  </build>\n\n</project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pom.xml	(revision fbbb79c9ab0d04051ab4a449370ab83858142961)
++++ pom.xml	(date 1607422493907)
+@@ -23,7 +23,7 @@
+     <dependency>
+       <groupId>com.testfabrik.webmate.sdk</groupId>
+       <artifactId>java-sdk</artifactId>
+-      <version>0.28.0</version>
++      <version>0.30.0</version>
+     </dependency>
+     <dependency>
+       <groupId>junit</groupId>
+Index: src/test/java/examples/WebmateSDKTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package examples;\n\nimport com.google.common.base.Optional;\nimport com.google.common.collect.ImmutableList;\nimport com.testfabrik.webmate.javasdk.ProjectId;\nimport com.testfabrik.webmate.javasdk.WebmateAPISession;\nimport com.testfabrik.webmate.javasdk.WebmateAuthInfo;\nimport com.testfabrik.webmate.javasdk.WebmateEnvironment;\nimport com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;\nimport com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;\nimport com.testfabrik.webmate.javasdk.devices.DeviceId;\nimport com.testfabrik.webmate.javasdk.devices.DeviceTemplate;\nimport com.testfabrik.webmate.javasdk.jobs.JobRunId;\nimport com.testfabrik.webmate.javasdk.jobs.JobRunSummary;\nimport com.testfabrik.webmate.javasdk.jobs.jobconfigs.BrowserSessionCrossbrowserJobInput;\nimport com.testfabrik.webmate.javasdk.mailtest.TestMail;\nimport com.testfabrik.webmate.javasdk.mailtest.TestMailAddress;\nimport com.testfabrik.webmate.javasdk.testmgmt.ArtifactInfo;\nimport com.testfabrik.webmate.javasdk.testmgmt.ArtifactType;\nimport com.testfabrik.webmate.javasdk.testmgmt.TestResult;\nimport org.junit.Assert;\nimport org.junit.Before;\nimport org.junit.Test;\nimport org.junit.runner.RunWith;\nimport org.junit.runners.JUnit4;\nimport org.openqa.selenium.By;\nimport org.openqa.selenium.remote.DesiredCapabilities;\nimport org.openqa.selenium.remote.RemoteWebDriver;\nimport org.openqa.selenium.support.ui.ExpectedConditions;\nimport org.openqa.selenium.support.ui.WebDriverWait;\n\nimport java.net.MalformedURLException;\nimport java.net.URL;\nimport java.util.*;\n\nimport static org.junit.Assert.fail;\n\n\n/**\n * Simple test showing how to perform a Selenium based crossbrowser test using webmate.\n */\n@RunWith(JUnit4.class)\npublic class WebmateSDKTest extends Commons {\n\n    private WebmateAPISession webmateSession;\n\n    @Before\n    public void setup() {\n        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);\n        webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create());\n    }\n\n    @Test\n    public void multiBrowserTest() {\n\n        Browser referenceBrowser = new Browser(\"firefox\", \"61\", \"WINDOWS_10_64\");\n\n        List<Browser> crossBrowsers = ImmutableList.of(\n                new Browser(\"chrome\", \"67\", \"WINDOWS_10_64\")\n        );\n\n        // perform test for reference browser\n        BrowserSessionId referenceSession = performTest(referenceBrowser);\n\n        // Query all screenshot artifacts made during the test on the reference browser\n        Set<ArtifactType> artifactsToQuery = new HashSet<>();\n        artifactsToQuery.add(ArtifactType.fromString(\"Page.FullpageScreenshot\"));\n\n        List<ArtifactInfo> artifacts = webmateSession.artifact.queryArtifacts(MyCredentials.MY_WEBMATE_PROJECTID, referenceSession, artifactsToQuery);\n        System.out.println(\"Found \" + artifacts.size() + \" screenshot artifacts for session \" + referenceSession);\n        for (ArtifactInfo i : artifacts) {\n            System.out.println(i);\n        }\n        System.out.println();\n\n\n        // Perform tests for cross browsers and collect corresponding BrowserSessions.\n        List<BrowserSessionId> crossbrowserSessions = new ArrayList<>();\n\n        for (Browser crossbrowser : crossBrowsers) {\n            BrowserSessionId browserSessionId = performTest(crossbrowser);\n            crossbrowserSessions.add(browserSessionId);\n        }\n\n        // start crossbrowser layout comparison for browsersessions\n        JobRunId jobRunId = webmateSession.jobEngine.startJob(\"WebmateSDKTest-Example\", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MyCredentials.MY_WEBMATE_PROJECTID);\n        System.out.println(\"Started Layout-Comparison-Job, ID of the JobRun is \" + jobRunId + \"\\n\");\n\n        // retrieve test results\n        JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);\n\n        try {\n            // Wait a few seconds until the first test results are available\n            Thread.sleep(3000);\n            // Wait until the number of results doesn't change anymore. This is an indication that the test is finished\n            Util.waitUntilStable(() -> webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId()).or(new ArrayList<>()).size(), 500);\n        } catch(Exception e) {\n            System.err.println(\"An error occured while waiting for test results\");\n            e.printStackTrace();\n            fail();\n        }\n\n        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId());\n\n        if (testResults.isPresent()) {\n            System.out.println(\"Got \" + testResults.get().size() + \" test results\");\n            for (TestResult result : testResults.get()) {\n                System.out.println(result);\n            }\n            System.out.println();\n        }\n\n        // Create a test mail address in the current test run\n        TestMailAddress address = webmateSession.mailTest.createTestMailAddress(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());\n        System.out.println(\"Generated test mail address: \" + address);\n        // Get all email received for the current test run. In this case there are no emails\n        List<TestMail> mails = webmateSession.mailTest.getMailsInTestRun(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());\n        Assert.assertEquals(mails.size(), 0);\n    }\n\n    @Test\n    public void deviceTest() {\n        // count devices currently deployed\n        List<DeviceId> existingDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));\n        int baseNumberDevices = existingDevices.size();\n        System.out.println(\"Found existing devices \" + existingDevices);\n\n        // get templates\n        List<DeviceTemplate> templates = new ArrayList<>(webmateSession.device.getDeviceTemplatesForProject(MyCredentials.MY_WEBMATE_PROJECTID));\n        System.out.println(\"Found \" + templates.size() + \" templates\");\n\n        // Select some win-10 template\n        DeviceTemplate winTemplate = templates.stream().filter(t -> t.getName().contains(\"win-10\")).findFirst().get();\n        System.out.println(\"Will deploy template \" + winTemplate.getName());\n\n        // deploy new device\n        webmateSession.device.requestDeviceByTemplate(MyCredentials.MY_WEBMATE_PROJECTID, winTemplate.getId());\n        System.out.println(\"Deploying...\");\n\n        // check if device has been deployed\n        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices + 1, 60000);\n\n        // Find id of new device\n        List<DeviceId> newDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));\n        System.out.println(\"Currently deployed devices: \" + newDevices);\n        DeviceId newId = newDevices.stream().filter(id -> !existingDevices.contains(id)).findFirst().get();\n\n        // delete device\n        System.out.println(\"Going to delete device \" + newId);\n        webmateSession.device.releaseDevice(newId);\n        System.out.println(\"Deleting...\");\n\n        // check if device has been deleted\n        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices, 60000);\n        System.out.println(\"Successfully deleted device\");\n    }\n\n    /**\n     * Simple interaction with a web page.\n     */\n    public BrowserSessionId performTest(Browser browser) {\n\n        System.out.println(\"Executing test with browser \" + browser);\n\n        DesiredCapabilities caps = new DesiredCapabilities();\n        caps.setCapability(\"browserName\", browser.browserName);\n        caps.setCapability(\"version\", browser.browserVersion);\n        caps.setCapability(\"platform\", browser.browserPlatform);\n        caps.setCapability(\"useproxy\", true);\n        caps.setCapability(\"email\", MyCredentials.MY_WEBMATE_USERNAME);\n        caps.setCapability(\"apikey\", MyCredentials.MY_WEBMATE_APIKEY);\n        caps.setCapability(\"project\", MyCredentials.MY_WEBMATE_PROJECTID.toString());\n\n        RemoteWebDriver driver;\n        try {\n            driver = new RemoteWebDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);\n        } catch (MalformedURLException e) {\n            throw new RuntimeException(e);\n        }\n\n        BrowserSessionRef browserSession = webmateSession.browserSession.getBrowserSessionForSeleniumSession(driver.getSessionId().toString());\n\n        try {\n\n            driver.get(\"http://www.examplepage.org/version/future\");\n\n            System.out.println(\"Selecting some elements....\");\n            WebDriverWait wait = new WebDriverWait(driver, 20);\n            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(\".container\"))).click();\n\n            browserSession.createState(\"after click\");\n\n            System.out.println(\"Clicking on something that will redirect us...\");\n            waitForElement(driver, \"goto-examplepage\").click();\n\n            String titleOfPage = driver.getTitle();\n            if (titleOfPage.equals(\"Cross Browser Issues Example\")) {\n                System.out.println(\"Redirect was successful and we verified that :-) Going to Form-Interaction Test:\");\n            } else {\n                throw new RuntimeException(\"The title of the page is not \\'Cross Browser Issues Example\\'\");\n            }\n\n            driver.get(\"http://www.examplepage.org/form_interaction\");\n\n            System.out.println(\"Click on link\");\n            waitForElement(driver, \"lk\").click();\n\n\n            if (waitForElement(driver, \".success\").getText().equals(\"Link Clicked!\")) {\n                System.out.println(\"Click was successful\");\n            } else {\n                throw new IllegalStateException(\"Click failed. Text was not \\'Link Clicked!\\' \");\n            }\n\n            browserSession.createState(\"after link\");\n\n            System.out.println(\"Clicking on Button\");\n            waitForElement(driver, \"bn\").click();\n\n            System.out.println(\"Clicking on Checkbox\");\n            waitForElement(driver, \"ck\").click();\n\n            System.out.println(\"Clicking on RadioButton\");\n            waitForElement(driver, \"rd\").click();\n\n            browserSession.createState(\"after radio button\");\n\n            System.out.println(\"Clicking on Element with a Hover Event\");\n            waitForElement(driver, \"mover\").click();\n\n            System.out.println(\"Entering some Text...\");\n            waitForElement(driver, \"text-input\").click();\n            waitForElement(driver, \"text-input\").sendKeys(\"hubba\");\n\n            System.out.println(\"Entering more Text...\");\n            waitForElement(driver, \"area\").click();\n            waitForElement(driver, \"area\").sendKeys(\"hubba hub!\");\n\n            System.out.println(\"Test done\\n\");\n\n            driver.quit();\n\n        } catch (Exception e) {\n            driver.quit();\n            throw e;\n        }\n\n        return browserSession.browserSessionId;\n    }\n}\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/examples/WebmateSDKTest.java	(revision fbbb79c9ab0d04051ab4a449370ab83858142961)
++++ src/test/java/examples/WebmateSDKTest.java	(date 1607423149289)
+@@ -9,7 +9,6 @@
+ import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
+ import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
+ import com.testfabrik.webmate.javasdk.devices.DeviceId;
+-import com.testfabrik.webmate.javasdk.devices.DeviceTemplate;
+ import com.testfabrik.webmate.javasdk.jobs.JobRunId;
+ import com.testfabrik.webmate.javasdk.jobs.JobRunSummary;
+ import com.testfabrik.webmate.javasdk.jobs.jobconfigs.BrowserSessionCrossbrowserJobInput;
+@@ -53,120 +52,128 @@
+     @Test
+     public void multiBrowserTest() {
+ 
+-        Browser referenceBrowser = new Browser("firefox", "61", "WINDOWS_10_64");
++        Browser referenceBrowser = new Browser("chrome", "87", "WINDOWS_10_64");
+ 
+         List<Browser> crossBrowsers = ImmutableList.of(
+-                new Browser("chrome", "67", "WINDOWS_10_64")
++//                new Browser("chrome", "67", "WINDOWS_10_64")
+         );
+ 
+         // perform test for reference browser
+-        BrowserSessionId referenceSession = performTest(referenceBrowser);
++        performTest();
+ 
+         // Query all screenshot artifacts made during the test on the reference browser
+-        Set<ArtifactType> artifactsToQuery = new HashSet<>();
+-        artifactsToQuery.add(ArtifactType.fromString("Page.FullpageScreenshot"));
+-
+-        List<ArtifactInfo> artifacts = webmateSession.artifact.queryArtifacts(MyCredentials.MY_WEBMATE_PROJECTID, referenceSession, artifactsToQuery);
+-        System.out.println("Found " + artifacts.size() + " screenshot artifacts for session " + referenceSession);
+-        for (ArtifactInfo i : artifacts) {
+-            System.out.println(i);
+-        }
+-        System.out.println();
++//        Set<ArtifactType> artifactsToQuery = new HashSet<>();
++//        artifactsToQuery.add(ArtifactType.fromString("Page.FullpageScreenshot"));
++//
++//        List<ArtifactInfo> artifacts = webmateSession.artifact.queryArtifacts(MyCredentials.MY_WEBMATE_PROJECTID, referenceSession, artifactsToQuery);
++//        System.out.println("Found " + artifacts.size() + " screenshot artifacts for session " + referenceSession);
++//        for (ArtifactInfo i : artifacts) {
++//            System.out.println(i);
++//        }
++//        System.out.println();
+ 
+ 
+         // Perform tests for cross browsers and collect corresponding BrowserSessions.
+-        List<BrowserSessionId> crossbrowserSessions = new ArrayList<>();
+-
+-        for (Browser crossbrowser : crossBrowsers) {
+-            BrowserSessionId browserSessionId = performTest(crossbrowser);
+-            crossbrowserSessions.add(browserSessionId);
+-        }
++//        List<BrowserSessionId> crossbrowserSessions = new ArrayList<>();
++//
++//        for (Browser crossbrowser : crossBrowsers) {
++//            BrowserSessionId browserSessionId = performTest(crossbrowser);
++//            crossbrowserSessions.add(browserSessionId);
++//        }
+ 
+         // start crossbrowser layout comparison for browsersessions
+-        JobRunId jobRunId = webmateSession.jobEngine.startJob("WebmateSDKTest-Example", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MyCredentials.MY_WEBMATE_PROJECTID);
+-        System.out.println("Started Layout-Comparison-Job, ID of the JobRun is " + jobRunId + "\n");
++//        JobRunId jobRunId = webmateSession.jobEngine.startJob("WebmateSDKTest-Example", new BrowserSessionCrossbrowserJobInput(referenceSession, crossbrowserSessions), MyCredentials.MY_WEBMATE_PROJECTID);
++//        System.out.println("Started Layout-Comparison-Job, ID of the JobRun is " + jobRunId + "\n");
+ 
+         // retrieve test results
+-        JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);
++//        JobRunSummary summary = webmateSession.jobEngine.getSummaryOfJobRun(jobRunId);
+ 
+         try {
+             // Wait a few seconds until the first test results are available
+             Thread.sleep(3000);
+             // Wait until the number of results doesn't change anymore. This is an indication that the test is finished
+-            Util.waitUntilStable(() -> webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId()).or(new ArrayList<>()).size(), 500);
++//            Util.waitUntilStable(() -> webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId()).or(new ArrayList<>()).size(), 500);
+         } catch(Exception e) {
+             System.err.println("An error occured while waiting for test results");
+             e.printStackTrace();
+             fail();
+         }
+ 
+-        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId());
++//        Optional<List<TestResult>> testResults = webmateSession.testMgmt.getTestResults(summary.getOptTestRunInfo().getTestRunId());
+ 
+-        if (testResults.isPresent()) {
+-            System.out.println("Got " + testResults.get().size() + " test results");
+-            for (TestResult result : testResults.get()) {
+-                System.out.println(result);
+-            }
+-            System.out.println();
+-        }
++//        if (testResults.isPresent()) {
++//            System.out.println("Got " + testResults.get().size() + " test results");
++//            for (TestResult result : testResults.get()) {
++//                System.out.println(result);
++//            }
++//            System.out.println();
++//        }
+ 
+         // Create a test mail address in the current test run
+-        TestMailAddress address = webmateSession.mailTest.createTestMailAddress(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());
+-        System.out.println("Generated test mail address: " + address);
++//        TestMailAddress address = webmateSession.mailTest.createTestMailAddress(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());
++//        System.out.println("Generated test mail address: " + address);
+         // Get all email received for the current test run. In this case there are no emails
+-        List<TestMail> mails = webmateSession.mailTest.getMailsInTestRun(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());
+-        Assert.assertEquals(mails.size(), 0);
++//        List<TestMail> mails = webmateSession.mailTest.getMailsInTestRun(MyCredentials.MY_WEBMATE_PROJECTID, summary.getOptTestRunInfo().getTestRunId());
++//        Assert.assertEquals(mails.size(), 0);
+     }
+ 
+     @Test
+-    public void deviceTest() {
+-        // count devices currently deployed
+-        List<DeviceId> existingDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
+-        int baseNumberDevices = existingDevices.size();
+-        System.out.println("Found existing devices " + existingDevices);
+-
+-        // get templates
+-        List<DeviceTemplate> templates = new ArrayList<>(webmateSession.device.getDeviceTemplatesForProject(MyCredentials.MY_WEBMATE_PROJECTID));
+-        System.out.println("Found " + templates.size() + " templates");
+-
+-        // Select some win-10 template
+-        DeviceTemplate winTemplate = templates.stream().filter(t -> t.getName().contains("win-10")).findFirst().get();
+-        System.out.println("Will deploy template " + winTemplate.getName());
+-
+-        // deploy new device
+-        webmateSession.device.requestDeviceByTemplate(MyCredentials.MY_WEBMATE_PROJECTID, winTemplate.getId());
+-        System.out.println("Deploying...");
+-
+-        // check if device has been deployed
+-        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices + 1, 60000);
+-
+-        // Find id of new device
+-        List<DeviceId> newDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
+-        System.out.println("Currently deployed devices: " + newDevices);
+-        DeviceId newId = newDevices.stream().filter(id -> !existingDevices.contains(id)).findFirst().get();
+-
+-        // delete device
+-        System.out.println("Going to delete device " + newId);
+-        webmateSession.device.releaseDevice(newId);
+-        System.out.println("Deleting...");
+-
+-        // check if device has been deleted
+-        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices, 60000);
+-        System.out.println("Successfully deleted device");
+-    }
++//    public void deviceTest() {
++//        // count devices currently deployed
++//        List<DeviceId> existingDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
++//        int baseNumberDevices = existingDevices.size();
++//        System.out.println("Found existing devices " + existingDevices);
++//
++//        // get templates
++//        List<DeviceTemplate> templates = new ArrayList<>(webmateSession.device.getDeviceTemplatesForProject(MyCredentials.MY_WEBMATE_PROJECTID));
++//        System.out.println("Found " + templates.size() + " templates");
++//
++//        // Select some win-10 template
++//        DeviceTemplate winTemplate = templates.stream().filter(t -> t.getName().contains("win-10")).findFirst().get();
++//        System.out.println("Will deploy template " + winTemplate.getName());
++//
++//        // deploy new device
++//        webmateSession.device.requestDeviceByTemplate(MyCredentials.MY_WEBMATE_PROJECTID, winTemplate.getId());
++//        System.out.println("Deploying...");
++//
++//        // check if device has been deployed
++//        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices + 1, 60000);
++//
++//        // Find id of new device
++//        List<DeviceId> newDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
++//        System.out.println("Currently deployed devices: " + newDevices);
++//        DeviceId newId = newDevices.stream().filter(id -> !existingDevices.contains(id)).findFirst().get();
++//
++//        // delete device
++//        System.out.println("Going to delete device " + newId);
++//        webmateSession.device.releaseDevice(newId);
++//        System.out.println("Deleting...");
++//
++//        // check if device has been deleted
++//        Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices, 60000);
++//        System.out.println("Successfully deleted device");
++//    }
+ 
+     /**
+      * Simple interaction with a web page.
+      */
+-    public BrowserSessionId performTest(Browser browser) {
++    public void performTest() {
+ 
+-        System.out.println("Executing test with browser " + browser);
++        System.out.println("Executing test with browser ");
+ 
+         DesiredCapabilities caps = new DesiredCapabilities();
+-        caps.setCapability("browserName", browser.browserName);
+-        caps.setCapability("version", browser.browserVersion);
+-        caps.setCapability("platform", browser.browserPlatform);
+-        caps.setCapability("useproxy", true);
++        caps.setCapability("browserName", "chrome");
++        caps.setCapability("version", "87");
++        caps.setCapability("platform", "WINDOWS_10_64");
++//        caps.setCapability("model", "Galaxy Tab S2 9.7");
++//        caps.setCapability("appPackage", "com.testfabrik.demo");
++//        caps.setCapability("appActivity", "host.exp.exponent.MainActivity");
++
++
++
++
++
++        //        caps.setCapability("useproxy", true);
+         caps.setCapability("email", MyCredentials.MY_WEBMATE_USERNAME);
+         caps.setCapability("apikey", MyCredentials.MY_WEBMATE_APIKEY);
+         caps.setCapability("project", MyCredentials.MY_WEBMATE_PROJECTID.toString());
+@@ -181,62 +188,61 @@
+         BrowserSessionRef browserSession = webmateSession.browserSession.getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
+ 
+         try {
++            driver.get("https://www.dialog-versicherung.de/");
+ 
+-            driver.get("http://www.examplepage.org/version/future");
+-
+-            System.out.println("Selecting some elements....");
+-            WebDriverWait wait = new WebDriverWait(driver, 20);
+-            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
++//            System.out.println("Selecting some elements....");
++//            WebDriverWait wait = new WebDriverWait(driver, 20);
++//            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
+ 
+             browserSession.createState("after click");
+ 
+-            System.out.println("Clicking on something that will redirect us...");
+-            waitForElement(driver, "goto-examplepage").click();
+-
+-            String titleOfPage = driver.getTitle();
+-            if (titleOfPage.equals("Cross Browser Issues Example")) {
+-                System.out.println("Redirect was successful and we verified that :-) Going to Form-Interaction Test:");
+-            } else {
+-                throw new RuntimeException("The title of the page is not \'Cross Browser Issues Example\'");
+-            }
+-
+-            driver.get("http://www.examplepage.org/form_interaction");
+-
+-            System.out.println("Click on link");
+-            waitForElement(driver, "lk").click();
+-
+-
+-            if (waitForElement(driver, ".success").getText().equals("Link Clicked!")) {
+-                System.out.println("Click was successful");
+-            } else {
+-                throw new IllegalStateException("Click failed. Text was not \'Link Clicked!\' ");
+-            }
+-
+-            browserSession.createState("after link");
++//            System.out.println("Clicking on something that will redirect us...");
++//            waitForElement(driver, "goto-examplepage").click();
+ 
+-            System.out.println("Clicking on Button");
+-            waitForElement(driver, "bn").click();
++//            String titleOfPage = driver.getTitle();
++//            if (titleOfPage.equals("Cross Browser Issues Example")) {
++//                System.out.println("Redirect was successful and we verified that :-) Going to Form-Interaction Test:");
++//            } else {
++//                throw new RuntimeException("The title of the page is not \'Cross Browser Issues Example\'");
++//            }
+ 
+-            System.out.println("Clicking on Checkbox");
+-            waitForElement(driver, "ck").click();
++//            driver.get("http://www.examplepage.org/form_interaction");
++//
++//            System.out.println("Click on link");
++//            waitForElement(driver, "lk").click();
++//
++//
++//            if (waitForElement(driver, ".success").getText().equals("Link Clicked!")) {
++//                System.out.println("Click was successful");
++//            } else {
++//                throw new IllegalStateException("Click failed. Text was not \'Link Clicked!\' ");
++//            }
++//
++//            browserSession.createState("after link");
++//
++//            System.out.println("Clicking on Button");
++//            waitForElement(driver, "bn").click();
++//
++//            System.out.println("Clicking on Checkbox");
++//            waitForElement(driver, "ck").click();
++//
++//            System.out.println("Clicking on RadioButton");
++//            waitForElement(driver, "rd").click();
+ 
+-            System.out.println("Clicking on RadioButton");
+-            waitForElement(driver, "rd").click();
++//            browserSession.createState("after radio button");
+ 
+-            browserSession.createState("after radio button");
+-
+-            System.out.println("Clicking on Element with a Hover Event");
+-            waitForElement(driver, "mover").click();
+-
+-            System.out.println("Entering some Text...");
+-            waitForElement(driver, "text-input").click();
+-            waitForElement(driver, "text-input").sendKeys("hubba");
+-
+-            System.out.println("Entering more Text...");
+-            waitForElement(driver, "area").click();
+-            waitForElement(driver, "area").sendKeys("hubba hub!");
+-
+-            System.out.println("Test done\n");
++//            System.out.println("Clicking on Element with a Hover Event");
++//            waitForElement(driver, "mover").click();
++//
++//            System.out.println("Entering some Text...");
++//            waitForElement(driver, "text-input").click();
++//            waitForElement(driver, "text-input").sendKeys("hubba");
++//
++//            System.out.println("Entering more Text...");
++//            waitForElement(driver, "area").click();
++//            waitForElement(driver, "area").sendKeys("hubba hub!");
++//
++//            System.out.println("Test done\n");
+ 
+             driver.quit();
+ 
+@@ -245,7 +251,6 @@
+             throw e;
+         }
+ 
+-        return browserSession.browserSessionId;
+     }
+ }
+ 
