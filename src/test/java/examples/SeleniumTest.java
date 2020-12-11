@@ -56,7 +56,7 @@ public class SeleniumTest extends Commons {
         caps.setCapability("project", MY_WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:autoScreenshots", true);
         caps.setCapability("wm:name", "A sample selenium test");
-        caps.setCapability("wm:tags", "Sprint 34, Hello World");
+        caps.setCapability("wm:tags", "Sprint=34, Hello World");
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
 
