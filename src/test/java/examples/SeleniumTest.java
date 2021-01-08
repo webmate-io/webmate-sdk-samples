@@ -31,7 +31,7 @@ public class SeleniumTest extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,

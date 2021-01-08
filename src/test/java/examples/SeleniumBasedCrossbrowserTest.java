@@ -2,10 +2,12 @@ package examples;
 
 import com.google.common.collect.ImmutableList;
 import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.Browser;
-import com.testfabrik.webmate.javasdk.browsersession.*;
-import com.testfabrik.webmate.javasdk.testmgmt.*;
-import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
+import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
+import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
+import com.testfabrik.webmate.javasdk.browsersession.OfflineExpeditionSpec;
+import com.testfabrik.webmate.javasdk.testmgmt.TestRun;
+import com.testfabrik.webmate.javasdk.testmgmt.TestRunInfo;
+import com.testfabrik.webmate.javasdk.testmgmt.spec.ExpeditionComparisonSpec;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,13 +17,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
 
 import static examples.MyCredentials.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 
 /**
