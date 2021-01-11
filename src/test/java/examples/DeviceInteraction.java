@@ -1,23 +1,15 @@
 package examples;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Resources;
-import com.testfabrik.webmate.javasdk.WebmateAPISession;
-import com.testfabrik.webmate.javasdk.WebmateAuthInfo;
-import com.testfabrik.webmate.javasdk.WebmateEnvironment;
+import com.testfabrik.webmate.javasdk.*;
 import com.testfabrik.webmate.javasdk.devices.*;
+import com.testfabrik.webmate.javasdk.packagemgmt.ImageType;
 import com.testfabrik.webmate.javasdk.packagemgmt.Package;
-import com.testfabrik.webmate.javasdk.packagemgmt.PackageId;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import static examples.MyCredentials.MY_WEBMATE_PROJECTID;
@@ -26,7 +18,7 @@ public class DeviceInteraction {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
@@ -70,9 +62,10 @@ public class DeviceInteraction {
 
     @Test
     public void deployAndroidDevice() {
+        Platform platform = new Platform(PlatformType.ANDROID, "9");
         webmateSession.device.requestDeviceByRequirements(MY_WEBMATE_PROJECTID,
                 new DeviceRequest("Sample Device",
-                        new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, "Android_9"))));
+                        new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, platform.toString()))));
     }
 
     /**
@@ -81,25 +74,38 @@ public class DeviceInteraction {
      */
     @Test
     public void installApp() throws IOException {
-
-        // read apk from classpath
+        // Read apk from classpath
         byte[] apkData = Resources.toByteArray(this.getClass().getResource("sample.apk"));
 
-        // upload apk to webmate
+        // Upload apk to webmate
         Package pkgInfo = webmateSession.packages.uploadApplicationPackage(MY_WEBMATE_PROJECTID, apkData,
                 "Example app", "apk");
 
         System.out.println("App " + pkgInfo.getId() + " has been uploaded");
 
-        // deploy new device with Platform "Android_10"
+        // Deploy new device with Platform "Android_10"
+        Platform platform = new Platform(PlatformType.ANDROID, "10");
         DeviceDTO newDevice = webmateSession.device.requestDeviceByRequirements(new DeviceRequest("Test Device",
-                new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, "Android_10"))));
+                new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, platform.toString()))));
 
         System.out.println("Device " + newDevice.getId() + " has been deployed");
 
-        // install app on device
+        // Install app on device
         webmateSession.device.installAppOnDevice(newDevice.getId(), pkgInfo.getId());
         System.out.println("App has been installed on device");
-
     }
+
+    @Test
+    public void uploadImagesAndUseForCameraSimulation() throws IOException {
+        // Deploy new device with Platform "Android_10"
+        Platform platform = new Platform(PlatformType.ANDROID, "10");
+        DeviceDTO newDevice = webmateSession.device.requestDeviceByRequirements(new DeviceRequest("Test Device",
+                new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, platform.toString()))));
+
+        // Upload QR code image and push it to the device
+        byte[] qrCode = Resources.toByteArray(this.getClass().getResource("qrcode.png"));
+        webmateSession.device.uploadImageToDeviceAndSetForCameraSimulation(MY_WEBMATE_PROJECTID, qrCode, "MyQRCode",
+                ImageType.PNG, newDevice.getId());
+    }
+
 }
