@@ -73,13 +73,16 @@ public class DeviceInteraction {
      * available), and installs the uploaded app onto the device.
      */
     @Test
-    public void installApp() throws IOException {
+    public void installApp() throws IOException, InterruptedException {
         // Read apk from classpath
         byte[] apkData = Resources.toByteArray(this.getClass().getResource("sample.apk"));
 
         // Upload apk to webmate
         Package pkgInfo = webmateSession.packages.uploadApplicationPackage(MY_WEBMATE_PROJECTID, apkData,
                 "Example app", "apk");
+        // Wait until the package has been processed and is available. We are working on this issue to remove the sleep
+        // in the future.
+        Thread.sleep(2000);
 
         System.out.println("App " + pkgInfo.getId() + " has been uploaded");
 
@@ -89,6 +92,9 @@ public class DeviceInteraction {
                 new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, platform.toString()))));
 
         System.out.println("Device " + newDevice.getId() + " has been deployed");
+
+        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
+        Thread.sleep(2000);
 
         // Install app on device
         webmateSession.device.installAppOnDevice(newDevice.getId(), pkgInfo.getId());
