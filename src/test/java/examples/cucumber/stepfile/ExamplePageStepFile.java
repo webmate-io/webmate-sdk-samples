@@ -115,7 +115,7 @@ public class ExamplePageStepFile implements En {
             waitForElement(driver, By.id("area")).click();
             waitForElement(driver, By.id("area")).sendKeys("hubba hub!");
         });
-        Then("the test was successful.", () -> {
+        Then("the test was successful", () -> {
             testRun.finish(TestRunEvaluationStatus.PASSED);
             driver.quit();
         });
