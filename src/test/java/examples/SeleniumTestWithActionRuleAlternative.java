@@ -57,7 +57,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
     @BeforeClass
     public static void setup() throws MalformedURLException {
         // create the selenium driver
-        setupSeleniumSession("CHROME", "83", "WINDOWS_10_64");
+        setupSeleniumSession(BrowserType.Chrome.toString(), "83", "WINDOWS_10_64");
 
         // setup the webmate session
         // if this call and the corresponding teardown call are removed, the selenium test executes just fine
@@ -82,17 +82,15 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
                                              String browserPlatform) throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setCapability("browserName", "CHROME");
         caps.setCapability("browserName", browserName);
         caps.setCapability("version", browserVersion);
         caps.setCapability("platform", browserPlatform);
-        caps.setCapability("apikey", MY_WEBMATE_APIKEY);
-        caps.setCapability("email", MY_WEBMATE_USERNAME);
-        caps.setCapability("project", MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:autoScreenshots", true);
 
         driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
-
     }
 
     @Test

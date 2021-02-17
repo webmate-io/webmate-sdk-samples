@@ -21,7 +21,6 @@ import static examples.MyCredentials.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-
 /**
  * Simple test showing how to perform a Selenium test using webmate.
  */
@@ -41,7 +40,7 @@ public class SeleniumTest extends Commons {
 
     @Test
     public void performTest() throws MalformedURLException {
-        executeTestInBrowser("CHROME", "83", "WINDOWS_10_64");
+        executeTestInBrowser(BrowserType.Chrome.toString(), "83", "WINDOWS_10_64");
     }
 
     public BrowserSessionId executeTestInBrowser(String browserName, String browserVersion,
@@ -51,9 +50,9 @@ public class SeleniumTest extends Commons {
         caps.setCapability("browserName", browserName);
         caps.setCapability("version", browserVersion);
         caps.setCapability("platform", browserPlatform);
-        caps.setCapability("apikey", MY_WEBMATE_APIKEY);
-        caps.setCapability("email", MY_WEBMATE_USERNAME);
-        caps.setCapability("project", MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:autoScreenshots", true);
         caps.setCapability("wm:name", "A sample selenium test");
         caps.setCapability("wm:tags", "Sprint=34, Hello World");

@@ -19,7 +19,12 @@ import java.net.URL;
 import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
-
+/**
+ * This is example step file for the toy page: http://www.examplepage.org/form_interaction
+ * The defined steps are referenced in the cucumber file example.feature.
+ * The test executed on an iPhone XR in Safari. Make sure the device with the given specification is available in your
+ * project. Otherwise customize the according capabilities.
+ */
 public class ExamplePageStepFile implements En {
 
     private static RemoteWebDriver driver;
@@ -42,14 +47,14 @@ public class ExamplePageStepFile implements En {
 
         DesiredCapabilities caps = new DesiredCapabilities();
 
-        caps.setCapability("browserName", "safari");
+        caps.setCapability("browserName", BrowserType.SAFARI);
         caps.setCapability("version", "14");
         caps.setCapability("platform", "iOS_14.2");
         caps.setCapability("model", "iPhone XR");
 
-        caps.setCapability("email", MyCredentials.MY_WEBMATE_USERNAME);
-        caps.setCapability("apikey", MyCredentials.MY_WEBMATE_APIKEY);
-        caps.setCapability("project", MyCredentials.MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, MyCredentials.MY_WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, MyCredentials.MY_WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, MyCredentials.MY_WEBMATE_PROJECTID.toString());
 
         caps.setCapability("wm:video", true);
 
