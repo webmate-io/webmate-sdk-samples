@@ -1,13 +1,14 @@
 package examples.cucumber.stepfile;
 
 import com.testfabrik.webmate.javasdk.*;
+import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRun;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
 import com.testfabrik.webmate.javasdk.testmgmt.TestSession;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.StoryCheckSpec;
 import examples.MyCredentials;
+import examples.pages.ExamplePageFormInteraction;
 import io.cucumber.java8.En;
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -16,7 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -24,12 +24,28 @@ import static org.junit.Assert.assertEquals;
  * The defined steps are referenced in the cucumber file example.feature.
  * The test executed on an iPhone XR in Safari. Make sure the device with the given specification is available in your
  * project. Otherwise customize the according capabilities.
+ *
+ * See the cucumber documentation for more information about cucumber hooks and keywords:
+ * - https://cucumber.io/docs/gherkin/reference/
+ * - https://cucumber.io/docs/cucumber/api/#hooks
  */
 public class ExamplePageStepFile implements En {
 
     private static RemoteWebDriver driver;
     private static WebmateAPISession webmateSession;
+    private static BrowserSessionRef browserSession;
     private static TestRun testRun;
+    private static ExamplePageFormInteraction examplePage;
+
+    private static void onFailure(Throwable e, boolean failedWebmateAction) throws Throwable {
+        System.err.println("An error happened: " + e);
+        e.printStackTrace();
+        testRun.finish(TestRunEvaluationStatus.FAILED);
+        if (failedWebmateAction) {
+            webmateSession.finishActionAsFailure(e.toString());
+        }
+        throw e;
+    }
 
     public ExamplePageStepFile() throws URISyntaxException {
 
@@ -58,71 +74,99 @@ public class ExamplePageStepFile implements En {
 
         caps.setCapability("wm:video", true);
 
-        try {
-            driver = new RemoteWebDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
-            webmateSession.addSeleniumSession(driver.getSessionId().toString());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        Before(() -> {
+            try {
+                driver = new RemoteWebDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
+                examplePage = new ExamplePageFormInteraction(driver);
+                webmateSession.addSeleniumSession(driver.getSessionId().toString());
+                browserSession = webmateSession.browserSession
+                        .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
+
+                testRun = webmateSession.testMgmt.startExecutionWithBuilder(
+                        StoryCheckSpec.StoryCheckBuilder.builder("testIfInteractionPageIsTestable"));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         Given("the examplepage has been opened", () -> {
-            testRun = webmateSession.testMgmt.startExecution(
-                    StoryCheckSpec.StoryCheckBuilder.builder("testIfInteractionPageIsTestable"));
-
             driver.get("http://www.examplepage.org/form_interaction");
         });
 
         When("the user clicks on 'link click'", () -> {
             try {
                 webmateSession.startAction("the user clicks on 'link click'");
-                waitForElement(driver, By.id("lk")).click();
-                assertEquals("Link Clicked!", waitForElement(driver, By.cssSelector(".success")).getText());
-            } catch (Throwable e) {
-                driver.quit();
-                webmateSession.finishActionAsFailure(e.getMessage());
-            } finally {
+                examplePage.clickLink();
                 webmateSession.finishAction();
+            } catch (Throwable e) {
+                onFailure(e, true);
             }
+        });
+
+        Then("{string} text box should be visible", (String msg) -> {
+            String sucText = examplePage.getSuccessBoxText();
+            assertEquals(msg, sucText);
         });
 
         When("she clicks on 'button click'", () -> {
             try {
                 webmateSession.startAction("she clicks on 'button click'");
-                waitForElement(driver, By.id("bn")).click();
-            } catch (Throwable e) {
-                driver.quit();
-            } finally {
+                examplePage.clickButtonClick();
                 webmateSession.finishAction();
+            } catch (Throwable e) {
+                onFailure(e, true);
             }
         });
 
         When("she clicks on 'checkbox click'", () -> {
             try {
                 webmateSession.startAction("she clicks on 'checkbox click'");
-                waitForElement(driver, By.id("ck")).click();
-            } catch (Throwable e) {
-                driver.quit();
-            } finally {
+                examplePage.clickCheckboxClick();
                 webmateSession.finishAction();
+            } catch (Throwable e) {
+                onFailure(e, true);
             }
         });
+
         When("she enables the radio button", () -> {
-            waitForElement(driver, By.id("rd")).click();
+            try {
+                examplePage.clickRadioButton();
+            } catch (Throwable e) {
+                onFailure(e, false);
+            }
         });
+
         When("she activates 'hover me'", () -> {
-            waitForElement(driver, By.id("mover")).click();
+            try {
+                examplePage.clickHoverMe();
+            } catch (Exception e) {
+                onFailure(e, false);
+            }
         });
+
         When("she enters input into the input field", () -> {
-            waitForElement(driver, By.id("text-input")).click();
-            waitForElement(driver, By.id("text-input")).sendKeys("hubba");
+            try {
+                examplePage.enterTextIntoInput("Test test");
+            } catch (Exception e) {
+                onFailure(e, false);
+            }
         });
+
         When("she enters input into the text area", () -> {
-            waitForElement(driver, By.id("area")).click();
-            waitForElement(driver, By.id("area")).sendKeys("hubba hub!");
+            try {
+                examplePage.enterTextIntoTextArea("Here some more test");
+            } catch (Exception e) {
+                onFailure(e, false);
+            }
         });
+
         Then("the test was successful", () -> {
             testRun.finish(TestRunEvaluationStatus.PASSED);
+        });
+
+        After(() -> {
             driver.quit();
         });
+
     }
 }
