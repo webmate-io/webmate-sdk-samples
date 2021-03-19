@@ -1,14 +1,11 @@
-# webmate Java SDK Samples
+# webmate Java SDK Samples <img src="https://avatars.githubusercontent.com/u/13346605" alt="webmate logo" width="28"/>
 
-This repository contains examples of how to use the [webmate SDK](https://github.com/webmate-io/webmate-sdk-java).
-See the REST API [Swagger documentation](https://app.webmate.io/api/swagger) for a comprehensive summary of the webmate functionalities.
+This repository contains examples of how to use the [webmate Java SDK](https://github.com/webmate-io/webmate-sdk-java).
 
 
-# Run the Project
+## Samples
+
 To run the examples add your webmate credentials in `MyCredentials.java` and run `mvn test`
-
-
-# Tests
 
 <table border="1">
     <tr>
@@ -64,3 +61,8 @@ To run the examples add your webmate credentials in `MyCredentials.java` and run
         <td>JUnit</td>
     </tr>
 </table>
+
+## webmate API
+
+Although, the SDK provides a number of features and convenience wrappers it doesn't exhaust the full potential of the webmate API.
+See the REST API [Swagger documentation](https://app.webmate.io/api/swagger) for a comprehensive summary of the webmate functionalities.

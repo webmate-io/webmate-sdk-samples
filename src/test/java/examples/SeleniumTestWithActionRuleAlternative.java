@@ -57,7 +57,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
     @BeforeClass
     public static void setup() throws MalformedURLException {
         // create the selenium driver
-        setupSeleniumSession(BrowserType.Chrome.toString(), "83", "WINDOWS_10_64");
+        setupSeleniumSession(BrowserType.CHROME.toString(), "83", "WINDOWS_10_64");
 
         // setup the webmate session
         // if this call and the corresponding teardown call are removed, the selenium test executes just fine
@@ -88,6 +88,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
         caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
         caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:autoScreenshots", true);
 
         driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
@@ -141,11 +142,11 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
 
         System.out.println("Entering some Text...");
         waitForElement(driver, "text-input").click();
-        waitForElement(driver, "text-input").sendKeys("hubba");
+        waitForElement(driver, "text-input").sendKeys("Test test");
 
         System.out.println("Entering more Text...");
         waitForElement(driver, "area").click();
-        waitForElement(driver, "area").sendKeys("hubba hub!");
+        waitForElement(driver, "area").sendKeys("Here some more test");
 
     }
 
@@ -178,7 +179,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
         if (hasAtLeaseOneTestFailed) {
             seleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "At least one TestRun has failed");
         } else {
-            seleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "Successfull.");
+            seleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "Successful.");
         }
 
     }
@@ -211,7 +212,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
 
         @Override
         protected void starting(Description description) {
-            this.currentTest = webmateSession.testMgmt.startExecution(
+            this.currentTest = webmateSession.testMgmt.startExecutionWithBuilder(
                     StoryCheckSpec.StoryCheckBuilder.builder(description.getDisplayName()));
         }
     };

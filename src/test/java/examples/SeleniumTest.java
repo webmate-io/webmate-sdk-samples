@@ -40,27 +40,32 @@ public class SeleniumTest extends Commons {
 
     @Test
     public void performTest() throws MalformedURLException {
-        executeTestInBrowser(BrowserType.Chrome.toString(), "83", "WINDOWS_10_64");
+        Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
+        Browser browser = new Browser(BrowserType.CHROME, "83", platform);
+        executeTestInBrowser(browser);
     }
 
-    public BrowserSessionId executeTestInBrowser(String browserName, String browserVersion,
-                                                 String browserPlatform) throws MalformedURLException {
-
+    private DesiredCapabilities getCapabilities(Browser browser) {
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("browserName", browserName);
-        caps.setCapability("version", browserVersion);
-        caps.setCapability("platform", browserPlatform);
+        caps.setCapability("browserName", browser.getBrowserType().getValue());
+        caps.setCapability("version", browser.getVersion());
+        caps.setCapability("platform", browser.getPlatform().toString());
         caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
         caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:autoScreenshots", true);
         caps.setCapability("wm:name", "A sample selenium test");
         caps.setCapability("wm:tags", "Sprint=34, Hello World");
 
+        return caps;
+    }
+
+    public BrowserSessionId executeTestInBrowser(Browser browser) throws MalformedURLException {
+        System.out.println("Starting test for " + browser.getBrowserType() + " " + browser.getVersion() + " on " + browser.getPlatform());
+        DesiredCapabilities caps = getCapabilities(browser);
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
-
         WebmateSeleniumSession seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
-
         BrowserSessionRef browserSession = webmateSession.browserSession
                 .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
@@ -106,22 +111,21 @@ public class SeleniumTest extends Commons {
 
             System.out.println("Entering some Text...");
             waitForElement(driver, "text-input").click();
-            waitForElement(driver, "text-input").sendKeys("hubba");
+            waitForElement(driver, "text-input").sendKeys("Test test");
 
-            System.out.println("Entering more Text...");
+            System.out.println("Entering more text...");
             waitForElement(driver, "area").click();
-            waitForElement(driver, "area").sendKeys("hubba hub!");
+            waitForElement(driver, "area").sendKeys("Here some more test");
 
+            seleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
             System.out.println("Selenium expedition completed");
         } catch(Throwable e) {
+            seleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
             e.printStackTrace();
         } finally {
-            seleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
             driver.quit();
         }
 
         return browserSession.browserSessionId;
     }
 }
-
-

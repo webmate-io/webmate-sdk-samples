@@ -28,6 +28,15 @@ public class DeviceInteraction {
     }
 
     @Test
+    public void deployAndroidDevice() {
+        Platform platform = new Platform(PlatformType.ANDROID, "9");
+        DeviceDTO device = webmateSession.device.requestDeviceByRequirements(MY_WEBMATE_PROJECTID,
+                new DeviceRequest("Sample Device",
+                        new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, platform.toString()))));
+        System.out.println("Deployed Android device with id: " + device.getId());
+    }
+
+    @Test
     public void deviceTest() {
         // Count devices currently deployed
         List<DeviceId> existingDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
@@ -37,7 +46,8 @@ public class DeviceInteraction {
         // Request a Windows 10 device
         String windows10Request = "Win10 Request";
         Map<DevicePropertyName, Object> deviceProperties = new HashMap<>();
-        deviceProperties.put(DevicePropertyName.Platform, "WINDOWS_10_64");
+        Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
+        deviceProperties.put(DevicePropertyName.Platform, platform.toString());
         DeviceRequirements deviceRequirements = new DeviceRequirements(deviceProperties);
         DeviceRequest deviceRequest = new DeviceRequest(windows10Request, deviceRequirements);
         webmateSession.device.requestDeviceByRequirements(MyCredentials.MY_WEBMATE_PROJECTID, deviceRequest);
@@ -47,10 +57,10 @@ public class DeviceInteraction {
 
         // Find id of new device
         List<DeviceId> newDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID));
-        System.out.println("Currently deployed devices: " + newDevices);
+        System.out.println("Successfully deployed device with id: " + newDevices);
         DeviceId newId = newDevices.stream().filter(id -> !existingDevices.contains(id)).findFirst().get();
 
-        // Delete device
+        // Delete the new device again
         System.out.println("Going to delete device " + newId);
         webmateSession.device.releaseDevice(newId);
         System.out.println("Deleting...");
@@ -58,14 +68,6 @@ public class DeviceInteraction {
         // Check if device has been deleted
         Util.waitUntilEquals(() -> webmateSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID).size(), baseNumberDevices, 60000);
         System.out.println("Successfully deleted device");
-    }
-
-    @Test
-    public void deployAndroidDevice() {
-        Platform platform = new Platform(PlatformType.ANDROID, "9");
-        webmateSession.device.requestDeviceByRequirements(MY_WEBMATE_PROJECTID,
-                new DeviceRequest("Sample Device",
-                        new DeviceRequirements(ImmutableMap.of(DevicePropertyName.Platform, platform.toString()))));
     }
 
     /**
