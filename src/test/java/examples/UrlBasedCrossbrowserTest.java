@@ -11,12 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static examples.MyCredentials.*;
-
 
 /**
  * Simple test showing how to perform a cross browser test using webmate.
@@ -27,7 +25,7 @@ public class UrlBasedCrossbrowserTest extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
@@ -37,14 +35,14 @@ public class UrlBasedCrossbrowserTest extends Commons {
     }
 
     @Test
-    public void crossBrowserTest() throws InterruptedException {
+    public void crossBrowserTest() {
         // Specify the reference browser
-        Browser referenceBrowser = new Browser(BrowserType.Firefox, "81", new Platform(PlatformType.WINDOWS, "10", "64"));
+        Browser referenceBrowser = new Browser(BrowserType.FIREFOX, "81", new Platform(PlatformType.WINDOWS, "10", "64"));
 
         // Specify the browsers that should be compared to the reference browser
         List<Browser> crossBrowsers = ImmutableList.of(
-                new Browser(BrowserType.Chrome, "86", new Platform(PlatformType.WINDOWS, "10", "64")),
-                new Browser(BrowserType.InternetExplorer, "11", new Platform(PlatformType.WINDOWS, "10", "64"))
+                new Browser(BrowserType.CHROME, "86", new Platform(PlatformType.WINDOWS, "10", "64")),
+                new Browser(BrowserType.INTERNET_EXPLORER, "11", new Platform(PlatformType.WINDOWS, "10", "64"))
         );
 
         // TODO: do something with results
@@ -55,7 +53,7 @@ public class UrlBasedCrossbrowserTest extends Commons {
                 URI.create("http://www.examplepage.org")
         );
 
-        TestRun testRun = webmateSession.testMgmt.startExecution(
+        TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(
                 ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
                         "CrossBrowser Test via SDK",
                         ExpeditionSpecFactory.makeUrlListExpeditionSpec(urls, referenceBrowser),

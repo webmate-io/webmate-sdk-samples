@@ -72,7 +72,7 @@ public class ExamplePageStepFile implements En {
         caps.setCapability(WebmateCapabilityType.USERNAME, MyCredentials.MY_WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, MyCredentials.MY_WEBMATE_PROJECTID.toString());
 
-        caps.setCapability("wm:video", true);
+        caps.setCapability(WebmateCapabilityType.ENABLE_VIDEO_RECORDING, true);
 
         Before(() -> {
             try {

@@ -17,15 +17,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
 import static examples.MyCredentials.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 
 /**
  * Simple test that shows how to compare two Selenium based browser sessions (aka "expeditions")
@@ -58,7 +54,7 @@ public class SeleniumBasedRegressionTest extends Commons {
 
     private static final String REFERENCE_FILENAME = "webmate_referencesession_id.txt";
 
-    private static final BrowserType BROWSERTYPE = BrowserType.Chrome;
+    private static final BrowserType BROWSERTYPE = BrowserType.CHROME;
     private static final String BROWSERVERSION = "83";
     private static final Platform PLATFORM = new Platform(PlatformType.WINDOWS, "10", "64");
 
@@ -101,7 +97,7 @@ public class SeleniumBasedRegressionTest extends Commons {
 
         BrowserSessionId referenceExpeditionId = getReferenceExpeditionId();
 
-        TestRun testRun = webmateSession.testMgmt.startExecution(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
+        TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
                 "Example Regression Test",
                 new OfflineExpeditionSpec(referenceExpeditionId),
                 ImmutableList.of(new OfflineExpeditionSpec(compareExpeditionId))
@@ -112,7 +108,6 @@ public class SeleniumBasedRegressionTest extends Commons {
         System.out.println("Comparison is finished: " + testRunInfo);
         System.out.println("The result is available at: https://app.webmate.io/#/projects/" +
                 testRunInfo.getProjectId().toString() + "/testlab/testruns/" + testRunInfo.getTestRunId());
-
     }
 
 
@@ -171,11 +166,11 @@ public class SeleniumBasedRegressionTest extends Commons {
 
             System.out.println("Entering some Text...");
             waitForElement(driver, "text-input").click();
-            waitForElement(driver, "text-input").sendKeys("hubba");
+            waitForElement(driver, "text-input").sendKeys("Test test");
 
             System.out.println("Entering more Text...");
             waitForElement(driver, "area").click();
-            waitForElement(driver, "area").sendKeys("hubba hub!");
+            waitForElement(driver, "area").sendKeys("Here some more test");
 
             System.out.println("Selenium expedition completed");
         } catch(Throwable e) {
