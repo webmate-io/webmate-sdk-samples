@@ -79,7 +79,8 @@ public class SeleniumTestWithActionRule extends Commons {
         caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
         caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
-        caps.setCapability(WebmateCapabilityType.AUTOMATION_SCREENSHOTS, true);
+        // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
+        caps.setCapability("wm:autoScreenshots", true);
 
         driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
     }

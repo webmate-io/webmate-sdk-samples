@@ -53,9 +53,10 @@ public class SeleniumTest extends Commons {
         caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
         caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
-        caps.setCapability(WebmateCapabilityType.AUTOMATION_SCREENSHOTS, true);
-        caps.setCapability(WebmateCapabilityType.NAME, "A sample selenium test");
-        caps.setCapability(WebmateCapabilityType.TAGS, "Sprint=34, Hello World");
+        // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
+        caps.setCapability("wm:autoScreenshots", true);
+        caps.setCapability("wm:name", "A sample selenium test");
+        caps.setCapability("wm:tags", "Sprint=34, Hello World");
 
         return caps;
     }
