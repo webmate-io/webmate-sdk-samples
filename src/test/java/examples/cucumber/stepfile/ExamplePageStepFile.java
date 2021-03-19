@@ -71,8 +71,8 @@ public class ExamplePageStepFile implements En {
         caps.setCapability(WebmateCapabilityType.API_KEY, MyCredentials.MY_WEBMATE_APIKEY);
         caps.setCapability(WebmateCapabilityType.USERNAME, MyCredentials.MY_WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, MyCredentials.MY_WEBMATE_PROJECTID.toString());
-
-        caps.setCapability(WebmateCapabilityType.ENABLE_VIDEO_RECORDING, true);
+        // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
+        caps.setCapability("wm:video", true);
 
         Before(() -> {
             try {
