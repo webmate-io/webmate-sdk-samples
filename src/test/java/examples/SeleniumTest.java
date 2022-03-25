@@ -14,6 +14,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -30,18 +31,18 @@ public class SeleniumTest extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    public void setup() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID);
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID);
     }
 
     @Test
     public void performTest() throws MalformedURLException {
         Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
-        Browser browser = new Browser(BrowserType.CHROME, "83", platform);
+        Browser browser = new Browser(BrowserType.FIREFOX, "90", platform);
         executeTestInBrowser(browser);
     }
 
@@ -50,11 +51,11 @@ public class SeleniumTest extends Commons {
         caps.setCapability("browserName", browser.getBrowserType().getValue());
         caps.setCapability("version", browser.getVersion());
         caps.setCapability("platform", browser.getPlatform().toString());
-        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
-        caps.setCapability("wm:autoScreenshots", true);
+        // caps.setCapability("wm:autoScreenshots", true);
         caps.setCapability("wm:name", "A sample selenium test");
         caps.setCapability("wm:tags", "Sprint=34, Hello World");
 
@@ -70,7 +71,7 @@ public class SeleniumTest extends Commons {
                 .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
         try {
-            driver.get("http://www.examplepage.org/version/future");
+            driver.get("http://www.examplepage.org/version/future/");
 
             System.out.println("Selecting some elements....");
             WebDriverWait wait = new WebDriverWait(driver, 20);

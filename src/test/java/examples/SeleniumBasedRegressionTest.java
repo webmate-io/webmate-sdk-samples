@@ -17,6 +17,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
@@ -55,16 +57,16 @@ public class SeleniumBasedRegressionTest extends Commons {
     private static final String REFERENCE_FILENAME = "webmate_referencesession_id.txt";
 
     private static final BrowserType BROWSERTYPE = BrowserType.CHROME;
-    private static final String BROWSERVERSION = "83";
+    private static final String BROWSERVERSION = "93";
     private static final Platform PLATFORM = new Platform(PlatformType.WINDOWS, "10", "64");
 
     @Before
-    public void setup() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    public void setup() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID);
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID);
     }
 
     private BrowserSessionId getReferenceExpeditionId() throws IOException {
@@ -120,9 +122,9 @@ public class SeleniumBasedRegressionTest extends Commons {
         caps.setCapability("browserName", BROWSERTYPE.getValue());
         caps.setCapability("version", BROWSERVERSION);
         caps.setCapability("platform", PLATFORM.toString());
-        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
 
@@ -182,5 +184,3 @@ public class SeleniumBasedRegressionTest extends Commons {
         return browserSession.browserSessionId;
     }
 }
-
-

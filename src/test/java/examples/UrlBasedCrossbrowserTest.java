@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,12 @@ public class UrlBasedCrossbrowserTest extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    public void setup() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID
         );
     }
 
@@ -71,5 +72,3 @@ public class UrlBasedCrossbrowserTest extends Commons {
                 info.getProjectId().toString() + "/testlab/testruns/" + info.getTestRunId());
     }
 }
-
-

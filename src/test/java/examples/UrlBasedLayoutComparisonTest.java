@@ -16,6 +16,8 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -43,12 +45,12 @@ public class UrlBasedLayoutComparisonTest extends Commons {
     );
 
     @Before
-    public void setup() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    public void setup() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID);
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID);
     }
 
     @Test
@@ -59,14 +61,14 @@ public class UrlBasedLayoutComparisonTest extends Commons {
 
         Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
 
-        BrowserSessionId chromeSessionId1 = executeTestInBrowser(referenceUrls, new Browser(BrowserType.CHROME, "83", platform));
-        BrowserSessionId chromeSessionId2 = executeTestInBrowser(compareUrls, new Browser(BrowserType.CHROME, "83", platform));
+        BrowserSessionId chromeSessionId1 = executeTestInBrowser(referenceUrls, new Browser(BrowserType.CHROME, "93", platform));
+        BrowserSessionId chromeSessionId2 = executeTestInBrowser(compareUrls, new Browser(BrowserType.CHROME, "93", platform));
 
         TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
-           "Layout comparison",
-                new OfflineExpeditionSpec(chromeSessionId1),
-                ImmutableList.of(new OfflineExpeditionSpec(chromeSessionId2))
-        ).withTag("Selenium")
+                        "Layout comparison",
+                        new OfflineExpeditionSpec(chromeSessionId1),
+                        ImmutableList.of(new OfflineExpeditionSpec(chromeSessionId2))
+                ).withTag("Selenium")
                 .withTag("Sprint", "22")
                 .withCurrentDateAsTag());
 
@@ -89,9 +91,9 @@ public class UrlBasedLayoutComparisonTest extends Commons {
         caps.setCapability("browserName", browser.getBrowserType().getValue());
         caps.setCapability("version", browser.getVersion());
         caps.setCapability("platform", browser.getPlatform().toString());
-        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:sessions", this.testSession.getId().toString());
         caps.setCapability("wm:name", "Regression Test");
 
@@ -116,5 +118,3 @@ public class UrlBasedLayoutComparisonTest extends Commons {
         return browserSession.browserSessionId;
     }
 }
-
-

@@ -2,10 +2,12 @@
 
 This repository contains examples of how to use the [webmate Java SDK](https://github.com/webmate-io/webmate-sdk-java).
 
+## Usage 
+
+To run the examples, add your webmate credentials in `MyCredentials.java` and follow the instructions there. Then run `mvn test`.
+If you don't already have webmate credentials, you can sign up for demo credentials here: https://demo.webmate.io/#/login
 
 ## Samples
-
-To run the examples add your webmate credentials in `MyCredentials.java` and run `mvn test`
 
 <table border="1">
     <tr>
