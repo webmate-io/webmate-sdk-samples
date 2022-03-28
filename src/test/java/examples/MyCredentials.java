@@ -17,9 +17,9 @@ public class MyCredentials {
     // fill in
     public static String WEBMATE_USERNAME = "xxxx@xxxxxxxxx.com";
     // fill in
-    public static String WEBMATE_APIKEY = "e0bb0aed-9211-4f6d-acd4-38ab49bf2f34";
+    public static String WEBMATE_APIKEY = "xxxxxxxx-xxxx-4f6d-xxxx-xxxxxxxxxxxx";
     // fill in
-    public static ProjectId WEBMATE_PROJECTID = new ProjectId(UUID.fromString("93174ef1-6299-4690-b4c5-dfbaf11c4fa4"));
+    public static ProjectId WEBMATE_PROJECTID = new ProjectId(UUID.fromString("xxxxxxxx-xxxx-xxxx-b4c5-xxxxxxxxxxxx"));
     public static String WEBMATE_API_URI = "https://demo.webmate.io/api/v1";
 
 }
