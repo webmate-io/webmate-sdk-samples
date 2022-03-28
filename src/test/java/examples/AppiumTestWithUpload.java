@@ -1,12 +1,8 @@
 package examples;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.devices.DeviceDTO;
-import com.testfabrik.webmate.javasdk.devices.DevicePropertyName;
-import com.testfabrik.webmate.javasdk.devices.DeviceRequest;
-import com.testfabrik.webmate.javasdk.devices.DeviceRequirements;
+import com.testfabrik.webmate.javasdk.devices.*;
 import com.testfabrik.webmate.javasdk.packagemgmt.Package;
 import examples.helpers.Helpers;
 import examples.helpers.WebElementFunction;
@@ -19,55 +15,75 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static com.google.common.io.Resources.toByteArray;
-import static examples.MyCredentials.MY_WEBMATE_PROJECTID;
+import static examples.MyCredentials.*;
 
+/**
+ * NOTE: it is crucial to first run deployAndroidDeviceAndInstallApp() and then perform test.
+ * deployAndroidDeviceAndInstallApp() will deploy a device, upload and install the sample.apk app, which is then used by
+ * performTest.
+ */
 public class AppiumTestWithUpload extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    public void setup() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID
         );
     }
 
+
     @Test
-    public void deployAndroidDeviceAndInstallApp() throws IOException {
-        // request Pixel 3a device
-        DeviceDTO device = webmateSession.device.requestDeviceByRequirements(MY_WEBMATE_PROJECTID,
+    public void deployAndroidDeviceAndInstallApp() throws IOException, InterruptedException {
+        // request Android device
+        DeviceDTO device = webmateSession.device.requestDeviceByRequirements(WEBMATE_PROJECTID,
                 new DeviceRequest("Sample Device",
                         new DeviceRequirements(
                                 ImmutableMap.of(
-                                        DevicePropertyName.Model,  "Pixel 3a",
+                                        DevicePropertyName.Model,  "Galaxy A52 5G",
                                         DevicePropertyName.AutomationAvailable, true))));
+        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
+        // Check if device has been deployed
+        Thread.sleep(6000);
 
         byte[] apkData = toByteArray(this.getClass().getResource("sample.apk"));
 
         // Upload apk to webmate
-        Package pkgInfo = webmateSession.packages.uploadApplicationPackage(MY_WEBMATE_PROJECTID, apkData,
+        Package pkgInfo = webmateSession.packages.uploadApplicationPackage(WEBMATE_PROJECTID, apkData,
                 "Material example app", "apk");
+        // Wait until the package has been processed and is available. We are working on this issue to remove the sleep
+        // in the future.
+        Thread.sleep(3000);
 
         webmateSession.device.installAppOnDevice(device.getId(), pkgInfo.getId());
     }
 
 
+    /**
+     * Run deployAndroidDeviceAndInstallApp() before running this test!
+     * @throws MalformedURLException
+     * @throws URISyntaxException
+     * @throws InterruptedException
+     */
     @Test
-    public void performTest() throws MalformedURLException {
+    public void performTest() throws MalformedURLException, URISyntaxException, InterruptedException {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", "APPIUM");
-        caps.setCapability("version", "1.17.1");
-        caps.setCapability("platform", "Android_10");
-        caps.setCapability("model", "Pixel 3a");
+        caps.setCapability("version", "1.21.0");
+        caps.setCapability("platform", "Android_11");
+        caps.setCapability("model", "Galaxy A52 5G");
 
-        caps.setCapability("email", MyCredentials.MY_WEBMATE_USERNAME);
-        caps.setCapability("apikey", MyCredentials.MY_WEBMATE_APIKEY);
-        caps.setCapability("project", MyCredentials.MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability("email", MyCredentials.WEBMATE_USERNAME);
+        caps.setCapability("apikey", MyCredentials.WEBMATE_APIKEY);
+        caps.setCapability("project", MyCredentials.WEBMATE_PROJECTID.toString());
 
         caps.setCapability("appPackage", "com.afollestad.materialdialogssample");
         caps.setCapability("appActivity", "com.afollestad.materialdialogssample.MainActivity");
@@ -77,8 +93,11 @@ public class AppiumTestWithUpload extends Commons {
 
         AndroidDriver driver = new AndroidDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
 
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
-        WebmateAPISession webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(), MY_WEBMATE_PROJECTID);
+        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
+        // Check if device has been deployed
+        Thread.sleep(5000);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
+        WebmateAPISession webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI(WEBMATE_API_URI)), WEBMATE_PROJECTID);
 
         waitForElement(driver, "com.afollestad.materialdialogssample:id/basic_checkbox_titled_buttons")
                 .click();
