@@ -15,6 +15,10 @@ import org.junit.Test;
 import java.net.*;
 import java.util.Map;
 
+/**
+ * For this test to work you must specify PROXY_HOST and PROXY_PORT.
+ * Also make sure that the proxys Certificate Authoritys is installed on your system.
+ */
 public class ProxyTest {
 
     @Test
@@ -26,16 +30,16 @@ public class ProxyTest {
         String PROXY_USER = "proxyuser";
         String PROXY_PASSWORD = "proxypass";
 
-        WebmateAPISession apiSession = sessionWithNoAuthProxy(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
+        WebmateAPISession apiSession = sessionWithNoAuthProxy(new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY),
                 WebmateEnvironment.create(), PROXY_HOST, PROXY_PORT);
 
-//        WebmateAPISession apiSession = sessionWithAuthProxyUsernamePassword(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
+//        WebmateAPISession apiSession = sessionWithAuthProxyUsernamePassword(new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY),
 //                WebmateEnvironment.create(), PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD);
 
-//        WebmateAPISession apiSession = sessionWithAuthProxyNTLM(new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY),
+//        WebmateAPISession apiSession = sessionWithAuthProxyNTLM(new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY),
 //                WebmateEnvironment.create(), PROXY_HOST, PROXY_PORT, PROXY_USER_DOMAIN, PROXY_USER, PROXY_PASSWORD);
 
-        apiSession.device.getDeviceIdsForProject(MyCredentials.MY_WEBMATE_PROJECTID);
+        apiSession.device.getDeviceIdsForProject(MyCredentials.WEBMATE_PROJECTID);
     }
 
     public WebmateAPISession sessionWithAuthProxyUsernamePassword(WebmateAuthInfo authInfo, WebmateEnvironment env, String proxyHost, int proxyPort,
