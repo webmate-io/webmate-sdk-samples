@@ -18,6 +18,14 @@ import java.util.*;
 import static examples.MyCredentials.WEBMATE_API_URI;
 import static examples.MyCredentials.WEBMATE_PROJECTID;
 
+
+/**
+ * The device interaction test shows basic and advanced management of devices, such as deploying, releasing,
+ * uploading apps, uploading images and configuring camera simulation.
+ *
+ * Note that the tests consequently releasing devices after requesting them to enable successive execution of the tests.
+ * Otherwise at some point there were no more available devices to deploy.
+ */
 public class DeviceInteraction {
     private WebmateAPISession webmateSession;
 
@@ -34,7 +42,7 @@ public class DeviceInteraction {
 
     @After
     public void cleanup(){
-        // remove mobile devices - needs to be done, as only one device slot is available in demo session
+        // release mobile devices - needs to be done, as only one device slot is available in demo session
         List<DeviceId> existingDevices = new ArrayList<>(webmateSession.device.getDeviceIdsForProject(MyCredentials.WEBMATE_PROJECTID));
         for (DeviceId id : existingDevices){
             if(webmateSession.device.getDeviceInfo(id).getProperties().containsKey("appium.port"))
