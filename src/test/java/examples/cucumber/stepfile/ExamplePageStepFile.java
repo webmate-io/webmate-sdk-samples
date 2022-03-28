@@ -49,9 +49,9 @@ public class ExamplePageStepFile implements En {
 
     public ExamplePageStepFile() throws URISyntaxException {
 
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI("https://app.webmate.io/api/v1")),
-                MyCredentials.MY_WEBMATE_PROJECTID);
+                MyCredentials.WEBMATE_PROJECTID);
 
         webmateSession.addTag(new Tag("GIT", "2020-09-02"));
         webmateSession.addTag(new Tag("Product", "Unfall"));
@@ -68,9 +68,9 @@ public class ExamplePageStepFile implements En {
         caps.setCapability("platform", "iOS_14.2");
         caps.setCapability("model", "iPhone XR");
 
-        caps.setCapability(WebmateCapabilityType.API_KEY, MyCredentials.MY_WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MyCredentials.MY_WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MyCredentials.MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, MyCredentials.WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, MyCredentials.WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, MyCredentials.WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:video", true);
 
