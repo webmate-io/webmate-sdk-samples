@@ -76,7 +76,7 @@ public class AppiumTestWithUpload extends Commons {
     @Test
     public void performTest() throws MalformedURLException, URISyntaxException, InterruptedException {
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("browserName", "APPIUM");
+        caps.setCapability("browserName", "Appium");
         caps.setCapability("version", "1.21.0");
         caps.setCapability("platform", "Android_11");
         caps.setCapability("model", "Galaxy A52 5G");
@@ -91,24 +91,26 @@ public class AppiumTestWithUpload extends Commons {
         caps.setCapability("wm:name", "Demo Appium Test");
         caps.setCapability("wm:tags", "Sprint=22, Feature=DemoApp");
 
-        AndroidDriver driver = new AndroidDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
-
-        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
-        // Check if device has been deployed
-        Thread.sleep(5000);
         WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         WebmateAPISession webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI(WEBMATE_API_URI)), WEBMATE_PROJECTID);
 
-        waitForElement(driver, "com.afollestad.materialdialogssample:id/basic_checkbox_titled_buttons")
-                .click();
+        Thread.sleep(3000);
 
-        waitForElement(driver, "com.afollestad.materialdialogssample:id/md_checkbox_prompt")
+        AndroidDriver driver = new AndroidDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
+        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
+        // Check if device has been deployed
+        Thread.sleep(3000);
+
+        waitForElement(driver, "com.afollestad.materialdialogssample:id/basic_buttons")
                 .click();
 
         driver.findElement(MobileBy.AndroidUIAutomator("new UiSelector().textContains(\"" + "AGREE" + "\")"))
                 .click();
 
-        WebElementFunction elem = () -> driver.findElementByAndroidUIAutomator("new UiSelector().text(\"LIST + TITLE + CHECKBOX PROMPT + BUTTONS\")");
+        //WebElementFunction elem = () -> driver.findElement(MobileBy.AndroidUIAutomator("new UiSelector().textContains(\"LIST + TITLE + CHECKBOX PROMPT + BUTTONS\")"));
+        WebElementFunction elem = () -> driver.findElement(MobileBy.AndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true))" +
+                ".scrollIntoView(new UiSelector().textContains(\"LIST + TITLE + CHECKBOX PROMPT + BUTTONS\"))"));
+        System.out.println(elem.getElement());
         Helpers.scrollDownUntilElementIsInView(driver, elem);
         elem.getElement().click();
 
