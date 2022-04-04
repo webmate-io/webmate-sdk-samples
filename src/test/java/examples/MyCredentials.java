@@ -10,7 +10,7 @@ public class MyCredentials {
      * Simply fill in the username, api key and project ID
      * Details on how to get your API Key and Project ID can be found in the official webmate documentation.
      *         https://docs.webmate.io/reference/generate-api-key/?searchTerm=api
-            * There is no need to change the Selenium URL or the Webmate API URI
+            * There is no need to change the Selenium URL or the webmate API URI
      **/
     // fill in
     public static String WEBMATE_USERNAME = "xxxx@xxxxxxxxx.com";
@@ -27,7 +27,7 @@ public class MyCredentials {
 
 
     /**
-     * These are the credentials with which you can use the SDK with the demo instance of Webmate (https://demo.webmate.io).
+     * These are the credentials with which you can use the SDK with the demo instance of webmate (https://demo.webmate.io).
     **/
     //public static String WEBMATE_SELENIUM_URL = "https://selenium-demo.webmate.io/wd/hub";
     //public static String WEBMATE_API_URI = "https://demo.webmate.io/api/v1";
