@@ -74,8 +74,8 @@ public class DeviceInteraction {
         int baseNumberDevices = existingDevices.size();
         System.out.println("Found existing devices " + existingDevices);
 
-        // Request a Windows 10 device
-        String windows10Request = "Win10 Request";
+        // Request a Windows 11 device
+        String windows10Request = "Win11 Request";
         Map<DevicePropertyName, Object> deviceProperties = new HashMap<>();
         Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
         deviceProperties.put(DevicePropertyName.Platform, platform.toString());
