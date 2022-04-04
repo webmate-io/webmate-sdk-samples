@@ -17,6 +17,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static examples.MyCredentials.*;
@@ -31,25 +33,25 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
     private WebmateAPISession webmateSession;
 
     @Before
-    public void setup() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    public void setup() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID);
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID);
     }
 
     @Test
     public void performTest() throws MalformedURLException {
         Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
-        BrowserSessionId chromeSessionId = executeTestInBrowser(new Browser(BrowserType.CHROME, "83", platform));
-        BrowserSessionId firefoxSessionId = executeTestInBrowser(new Browser(BrowserType.FIREFOX, "81", platform));
+        BrowserSessionId chromeSessionId = executeTestInBrowser(new Browser(BrowserType.CHROME, "93", platform));
+        BrowserSessionId firefoxSessionId = executeTestInBrowser(new Browser(BrowserType.FIREFOX, "91", platform));
 
         TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
-           "Example cross-browser comparison",
-                new OfflineExpeditionSpec(chromeSessionId),
-                ImmutableList.of(new OfflineExpeditionSpec(firefoxSessionId))
-        ).withTag("Selenium")
+                        "Example cross-browser comparison",
+                        new OfflineExpeditionSpec(chromeSessionId),
+                        ImmutableList.of(new OfflineExpeditionSpec(firefoxSessionId))
+                ).withTag("Selenium")
                 .withTag("Sprint", "22")
                 .withCurrentDateAsTag());
 
@@ -69,9 +71,9 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
         caps.setCapability("browserName", browser.getBrowserType().getValue());
         caps.setCapability("version", browser.getVersion());
         caps.setCapability("platform", browser.getPlatform().toString());
-        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
 
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
 

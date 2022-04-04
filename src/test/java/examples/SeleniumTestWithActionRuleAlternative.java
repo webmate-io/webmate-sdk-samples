@@ -18,6 +18,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static examples.MyCredentials.*;
@@ -55,7 +57,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
     private static RemoteWebDriver driver;
 
     @BeforeClass
-    public static void setup() throws MalformedURLException {
+    public static void setup() throws MalformedURLException, URISyntaxException {
         // create the selenium driver
         setupSeleniumSession(BrowserType.CHROME.toString(), "83", "WINDOWS_10_64");
 
@@ -85,9 +87,9 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
         caps.setCapability("browserName", browserName);
         caps.setCapability("version", browserVersion);
         caps.setCapability("platform", browserPlatform);
-        caps.setCapability(WebmateCapabilityType.API_KEY, MY_WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MY_WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MY_WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:autoScreenshots", true);
 
@@ -161,12 +163,12 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
     private static boolean hasAtLeaseOneTestFailed = false;
 
     /** Authenticate with the webmate SDK and setup selenium and browsersessions */
-    private static void setupWebmateSession() {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.MY_WEBMATE_USERNAME, MyCredentials.MY_WEBMATE_APIKEY);
+    private static void setupWebmateSession() throws URISyntaxException {
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
-                WebmateEnvironment.create(),
-                MY_WEBMATE_PROJECTID);
+                WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID);
 
         seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
 
