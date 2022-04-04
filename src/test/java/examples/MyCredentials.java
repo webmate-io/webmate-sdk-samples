@@ -22,7 +22,7 @@ public class MyCredentials {
     /**
      * These are the credentials with which you can use the SDK with app.webmate.io (https://app.webmate.io)
      */
-    public static String WEBMATE_SELENIUM_URL = "https://app.webmate.io:44444/wd/hub";
+    public static String WEBMATE_SELENIUM_URL = "https://app.webmate.io/wd/hub";
     public static String WEBMATE_API_URI = "https://app.webmate.io/api/v1";
 
 
