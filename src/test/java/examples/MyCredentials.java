@@ -13,17 +13,17 @@ public class MyCredentials {
             * There is no need to change the Selenium URL or the webmate API URI
      **/
     // fill in
-    public static String WEBMATE_USERNAME = "xxxx@xxxxxxxxx.com";
+    public static String WEBMATE_USERNAME = System.getProperty("wm_sdk_sample_user","xxxx@xxxxxxxxx.com");
     // fill in
-    public static String WEBMATE_APIKEY = "xxxxxxxx-xxxx-4f6d-xxxx-xxxxxxxxxxxx";
+    public static String WEBMATE_APIKEY = System.getProperty("wm_sdk_sample_apikey","xxxxxxxx-xxxx-4f6d-xxxx-xxxxxxxxxxxx");
     // fill in
-    public static ProjectId WEBMATE_PROJECTID = new ProjectId(UUID.fromString("xxxxxxxx-xxxx-xxxx-b4c5-xxxxxxxxxxxx"));
+    public static ProjectId WEBMATE_PROJECTID = new ProjectId(UUID.fromString(System.getProperty("wm_sdk_sample_projectId","xxxxxxxx-xxxx-xxxx-b4c5-xxxxxxxxxxxx")));
 
     /**
      * These are the credentials with which you can use the SDK with app.webmate.io (https://app.webmate.io)
      */
-    public static String WEBMATE_SELENIUM_URL = "https://app.webmate.io/wd/hub";
-    public static String WEBMATE_API_URI = "https://app.webmate.io/api/v1";
+    public static String WEBMATE_SELENIUM_URL = System.getProperty("wm_sdk_sample_selenium","https://app.webmate.io/wd/hub");
+    public static String WEBMATE_API_URI = System.getProperty("wm_sdk_sample_api","https://app.webmate.io/api/v1");
 
 
     /**
