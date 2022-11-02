@@ -7,10 +7,12 @@ import com.testfabrik.webmate.javasdk.testmgmt.TestRun;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunInfo;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,6 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import static examples.MyCredentials.*;
@@ -50,6 +55,7 @@ import static org.junit.Assert.assertEquals;
  * deviations.
  */
 @RunWith(JUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SeleniumBasedRegressionTest extends Commons {
 
     private WebmateAPISession webmateSession;
@@ -71,7 +77,11 @@ public class SeleniumBasedRegressionTest extends Commons {
 
     private BrowserSessionId getReferenceExpeditionId() throws IOException {
         String home = System.getProperty("user.home");
-        File file = new File(home + "/"  + REFERENCE_FILENAME);
+        Path path = Paths.get(home + "/" + REFERENCE_FILENAME);
+        if (Files.notExists(path)){
+            createExpeditionReference();
+        }
+        File file = path.toFile();
         FileReader reader = new FileReader(file);
         BufferedReader bufferedReader = new BufferedReader(reader);
         String browserSessionIdStr = bufferedReader.readLine();
@@ -86,9 +96,8 @@ public class SeleniumBasedRegressionTest extends Commons {
         writer.close();
     }
 
-    @Test
-    @Ignore
-    public void createReferenceExpedition() throws IOException {
+
+    public void createExpeditionReference() throws IOException {
         BrowserSessionId referenceExpedition = executeTest();
         saveReferenceSessionId(referenceExpedition);
     }

@@ -11,6 +11,8 @@ import io.appium.java_client.android.AndroidDriver;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -31,6 +33,7 @@ import static examples.MyCredentials.*;
  */
 
 
+@RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AppiumTestWithUpload extends Commons {
     private WebmateAPISession webmateSession;
