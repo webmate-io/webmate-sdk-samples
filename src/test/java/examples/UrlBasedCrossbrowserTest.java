@@ -38,12 +38,12 @@ public class UrlBasedCrossbrowserTest extends Commons {
     @Test
     public void crossBrowserTest() {
         // Specify the reference browser
-        Browser referenceBrowser = new Browser(BrowserType.FIREFOX, "81", new Platform(PlatformType.WINDOWS, "10", "64"));
+        Browser referenceBrowser = new Browser(BrowserType.FIREFOX, "106", new Platform(PlatformType.WINDOWS, "11", "64"));
 
         // Specify the browsers that should be compared to the reference browser
         List<Browser> crossBrowsers = ImmutableList.of(
-                new Browser(BrowserType.CHROME, "86", new Platform(PlatformType.WINDOWS, "10", "64")),
-                new Browser(BrowserType.INTERNET_EXPLORER, "11", new Platform(PlatformType.WINDOWS, "10", "64"))
+                new Browser(BrowserType.CHROME, "106", new Platform(PlatformType.WINDOWS, "11", "64")),
+                new Browser(BrowserType.INTERNET_EXPLORER, "11", new Platform(PlatformType.WINDOWS, "11", "64"))
         );
 
         // TODO: do something with results

@@ -43,9 +43,9 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
 
     @Test
     public void performTest() throws MalformedURLException {
-        Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
-        BrowserSessionId chromeSessionId = executeTestInBrowser(new Browser(BrowserType.CHROME, "93", platform));
-        BrowserSessionId firefoxSessionId = executeTestInBrowser(new Browser(BrowserType.FIREFOX, "91", platform));
+        Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
+        BrowserSessionId chromeSessionId = executeTestInBrowser(new Browser(BrowserType.CHROME, "106", platform));
+        BrowserSessionId firefoxSessionId = executeTestInBrowser(new Browser(BrowserType.FIREFOX, "106", platform));
 
         TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
                         "Example cross-browser comparison",

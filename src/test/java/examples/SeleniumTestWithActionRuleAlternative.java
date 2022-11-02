@@ -59,7 +59,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
     @BeforeClass
     public static void setup() throws MalformedURLException, URISyntaxException {
         // create the selenium driver
-        setupSeleniumSession(BrowserType.CHROME.toString(), "83", "WINDOWS_10_64");
+        setupSeleniumSession(BrowserType.CHROME.toString(), "106", "WINDOWS_11_64");
 
         // setup the webmate session
         // if this call and the corresponding teardown call are removed, the selenium test executes just fine

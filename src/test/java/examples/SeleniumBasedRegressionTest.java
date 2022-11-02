@@ -57,8 +57,8 @@ public class SeleniumBasedRegressionTest extends Commons {
     private static final String REFERENCE_FILENAME = "webmate_referencesession_id.txt";
 
     private static final BrowserType BROWSERTYPE = BrowserType.CHROME;
-    private static final String BROWSERVERSION = "93";
-    private static final Platform PLATFORM = new Platform(PlatformType.WINDOWS, "10", "64");
+    private static final String BROWSERVERSION = "106";
+    private static final Platform PLATFORM = new Platform(PlatformType.WINDOWS, "11", "64");
 
     @Before
     public void setup() throws URISyntaxException {

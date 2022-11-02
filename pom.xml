@@ -89,6 +89,7 @@
         <version>2.19.1</version>
         <configuration>
           <excludes>
+            <exclude>**/ProxyTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

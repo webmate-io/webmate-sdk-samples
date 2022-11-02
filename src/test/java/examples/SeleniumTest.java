@@ -41,8 +41,8 @@ public class SeleniumTest extends Commons {
 
     @Test
     public void performTest() throws MalformedURLException {
-        Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
-        Browser browser = new Browser(BrowserType.FIREFOX, "90", platform);
+        Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
+        Browser browser = new Browser(BrowserType.FIREFOX, "106", platform);
         executeTestInBrowser(browser);
     }
 

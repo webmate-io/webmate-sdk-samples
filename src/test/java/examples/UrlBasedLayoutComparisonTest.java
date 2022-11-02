@@ -59,10 +59,10 @@ public class UrlBasedLayoutComparisonTest extends Commons {
         testSession = webmateSession.testMgmt.createTestSession("Regression Test");
         webmateSession.addToTestSession(testSession.getId());
 
-        Platform platform = new Platform(PlatformType.WINDOWS, "10", "64");
+        Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
 
-        BrowserSessionId chromeSessionId1 = executeTestInBrowser(referenceUrls, new Browser(BrowserType.CHROME, "93", platform));
-        BrowserSessionId chromeSessionId2 = executeTestInBrowser(compareUrls, new Browser(BrowserType.CHROME, "93", platform));
+        BrowserSessionId chromeSessionId1 = executeTestInBrowser(referenceUrls, new Browser(BrowserType.CHROME, "106", platform));
+        BrowserSessionId chromeSessionId2 = executeTestInBrowser(compareUrls, new Browser(BrowserType.CHROME, "106", platform));
 
         TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
                         "Layout comparison",

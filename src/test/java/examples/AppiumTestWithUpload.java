@@ -9,7 +9,9 @@ import examples.helpers.WebElementFunction;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -27,6 +29,9 @@ import static examples.MyCredentials.*;
  * deployAndroidDeviceAndInstallApp() will deploy a device, upload and install the sample.apk app, which is then used by
  * performTest.
  */
+
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AppiumTestWithUpload extends Commons {
     private WebmateAPISession webmateSession;
 
