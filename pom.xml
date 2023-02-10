@@ -12,38 +12,43 @@
     <version.selenium>3.141.59</version.selenium>
     <version.slf4j>1.7.25</version.slf4j>
     <version.jackson>2.10.1</version.jackson>
+    <version.junit>4.13.1</version.junit>
+    <version.cucumber>6.5.1</version.cucumber>
+    <version.cucumber-junit>6.5.1</version.cucumber-junit>
+    <version.appium>7.3.0</version.appium>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.testfabrik.webmate.sdk</groupId>
+      <artifactId>java-sdk</artifactId>
+      <version>0.50</version>
+    </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>${version.selenium}</version>
     </dependency>
     <dependency>
-      <groupId>com.testfabrik.webmate.sdk</groupId>
-      <artifactId>java-sdk</artifactId>
-      <version>0.43</version>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>${version.junit}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-java8</artifactId>
-      <version>6.5.1</version>
+      <version>${version.cucumber}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-junit</artifactId>
-      <version>6.5.1</version>
+      <version>${version.cucumber-junit}</version>
       <scope>test</scope>
     </dependency>
+
     <!-- Include this dependency to avoid ClassNotFoundException -->
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -61,7 +66,7 @@
     <dependency>
         <groupId>io.appium</groupId>
         <artifactId>java-client</artifactId>
-        <version>7.3.0</version>
+        <version>${version.appium}</version>
     </dependency>
   </dependencies>
 

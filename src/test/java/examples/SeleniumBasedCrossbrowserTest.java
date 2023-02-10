@@ -12,8 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
@@ -22,13 +24,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static examples.MyCredentials.*;
+import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
  * Simple test showing how to perform a cross browser test using webmate.
  */
 @RunWith(JUnit4.class)
-public class SeleniumBasedCrossbrowserTest extends Commons {
+public class SeleniumBasedCrossbrowserTest {
 
     private WebmateAPISession webmateSession;
 
@@ -85,7 +88,7 @@ public class SeleniumBasedCrossbrowserTest extends Commons {
 
             System.out.println("Selecting some elements....");
             WebDriverWait wait = new WebDriverWait(driver, 20);
-//        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
 
             browserSession.createState("after click");
 

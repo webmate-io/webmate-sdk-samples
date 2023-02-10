@@ -4,14 +4,12 @@ import com.testfabrik.webmate.javasdk.*;
 import com.testfabrik.webmate.javasdk.browsersession.*;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 import com.testfabrik.webmate.javasdk.testmgmt.*;
-import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -19,14 +17,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static examples.MyCredentials.*;
+import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Simple test showing how to perform a Selenium test using webmate.
  */
 @RunWith(JUnit4.class)
-public class SeleniumTest extends Commons {
+public class SeleniumTest {
 
     private WebmateAPISession webmateSession;
 
@@ -62,7 +60,7 @@ public class SeleniumTest extends Commons {
         return caps;
     }
 
-    public BrowserSessionId executeTestInBrowser(Browser browser) throws MalformedURLException {
+    public void executeTestInBrowser(Browser browser) throws MalformedURLException {
         System.out.println("Starting test for " + browser.getBrowserType() + " " + browser.getVersion() + " on " + browser.getPlatform());
         DesiredCapabilities caps = getCapabilities(browser);
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
@@ -72,11 +70,7 @@ public class SeleniumTest extends Commons {
 
         try {
             driver.get("http://www.examplepage.org/version/future/");
-
-            System.out.println("Selecting some elements....");
-            WebDriverWait wait = new WebDriverWait(driver, 20);
-
-            browserSession.createState("after click");
+            browserSession.createState("start");
 
             System.out.println("Clicking on something that will redirect us...");
             waitForElement(driver, "goto-examplepage").click();
@@ -126,7 +120,5 @@ public class SeleniumTest extends Commons {
         } finally {
             driver.quit();
         }
-
-        return browserSession.browserSessionId;
     }
 }

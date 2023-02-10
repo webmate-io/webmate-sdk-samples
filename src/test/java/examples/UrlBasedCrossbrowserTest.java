@@ -2,7 +2,6 @@ package examples;
 
 import com.google.common.collect.ImmutableList;
 import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.Browser;
 import com.testfabrik.webmate.javasdk.browsersession.ExpeditionSpecFactory;
 import com.testfabrik.webmate.javasdk.testmgmt.*;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
@@ -21,7 +20,7 @@ import static examples.MyCredentials.*;
  * Simple test showing how to perform a cross browser test using webmate.
  */
 @RunWith(JUnit4.class)
-public class UrlBasedCrossbrowserTest extends Commons {
+public class UrlBasedCrossbrowserTest {
 
     private WebmateAPISession webmateSession;
 
@@ -45,8 +44,6 @@ public class UrlBasedCrossbrowserTest extends Commons {
                 new Browser(BrowserType.CHROME, "106", new Platform(PlatformType.WINDOWS, "11", "64")),
                 new Browser(BrowserType.INTERNET_EXPLORER, "11", new Platform(PlatformType.WINDOWS, "11", "64"))
         );
-
-        // TODO: do something with results
 
         // Specify the urls under test
         List<URI> urls = ImmutableList.of(

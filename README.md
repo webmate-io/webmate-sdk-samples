@@ -9,12 +9,12 @@ If you don't already have webmate credentials, you can sign up for demo credenti
 
 **Note:** It is recommended to start the tests individually via an IDE of your choice. https://demo.webmate.io/ is a 
 shared demo instance of Webmate with limited resources/device slots.
-Running all tests in bulk would result in other users not being able to deploye devices and thus not being able to use 
+Running all tests in bulk would result in other users not being able to deploy devices and thus not being able to use 
 the webmate demo themselves for the runtime of the tests.
 
 ## Samples
 
-<table border="1">
+<table>
     <tr>
         <th>Test</th>
         <th>Frameworks</th>
@@ -27,7 +27,7 @@ the webmate demo themselves for the runtime of the tests.
     </tr>
     <tr>
         <td>
-            <a href="./src/test/java/examples/DeviceInteraction.java">DeviceInteraction</a>
+            <a href="./src/test/java/examples/DeviceInteractionTest.java">DeviceInteractionTest</a>
         </td>
         <td>JUnit</td>
     </tr>

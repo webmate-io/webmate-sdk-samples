@@ -28,18 +28,19 @@ import static examples.MyCredentials.*;
 /**
  * Simple test showing how to perform a layout comparison between two web pages (with different URLs) using webmate.
  */
+@SuppressWarnings("HttpUrlsUsage")
 @RunWith(JUnit4.class)
-public class UrlBasedLayoutComparisonTest extends Commons {
+public class UrlBasedLayoutComparisonTest {
 
     private WebmateAPISession webmateSession;
     private TestSession testSession;
 
-    private static List<String> referenceUrls = Arrays.asList(
+    private static final List<String> referenceUrls = Arrays.asList(
             "http://examplepage.org/index.html",
             "http://examplepage.org/version/current"
     );
 
-    private static List<String> compareUrls = Arrays.asList(
+    private static final List<String> compareUrls = Arrays.asList(
             "http://examplepage.org/index_alternative.html",
             "http://examplepage.org/version/future"
     );

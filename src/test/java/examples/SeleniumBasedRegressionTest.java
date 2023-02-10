@@ -8,13 +8,14 @@ import com.testfabrik.webmate.javasdk.testmgmt.TestRunInfo;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.*;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import static examples.MyCredentials.*;
+import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,19 +38,19 @@ import static org.junit.Assert.assertEquals;
  * One of the most interesting use cases for this functionality is to compare
  * two versions of a web page or web application, e.g. a stable release deployed at the
  * beginning of a sprint and a nightly version.
- *
+ * <p>
  * The following example provides two methods that may individually be executed as a JUnit test.
- *
+ * <p>
  * The first method ("createReferenceExpedition") performs a Selenium test on a web page. After
  * the test finishes, the corresponding BrowserSessionId (an alternative / forthcoming terminology
  * for this is "ExpeditionId") is saved to the home directory of the executing user in the
  * file "webmate_referencesession_id.txt".
- *
+ * <p>
  * The second method ("createExpeditionAndCompareWithReference") performs the same
  * Selenium test as above, returns its BrowserSessionId and starts a webmate TestRun of type
  * "ExpeditionComparison", which compares the layout of the latter Selenium test with
- * that whose Id is stored in "webmate_referencesession_id.txt".
- *
+ * that whose ID is stored in "webmate_referencesession_id.txt".
+ * <p>
  * Usually, if both methods are executed in direct succession, webmate won't find any
  * differences because the web page did not change between those runs. If you want to
  * see differences, you may change the Selenium script for the second run to add synthetic
@@ -56,7 +58,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SeleniumBasedRegressionTest extends Commons {
+public class SeleniumBasedRegressionTest {
 
     private WebmateAPISession webmateSession;
 
@@ -105,7 +107,6 @@ public class SeleniumBasedRegressionTest extends Commons {
     @Test
     public void createExpeditionAndCompareWithReference() throws IOException {
         BrowserSessionId compareExpeditionId = executeTest();
-
         BrowserSessionId referenceExpeditionId = getReferenceExpeditionId();
 
         TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
@@ -145,7 +146,7 @@ public class SeleniumBasedRegressionTest extends Commons {
 
             System.out.println("Selecting some elements....");
             WebDriverWait wait = new WebDriverWait(driver, 20);
-//        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
 
             browserSession.createState("after click");
 
@@ -164,8 +165,8 @@ public class SeleniumBasedRegressionTest extends Commons {
             System.out.println("Clicking on Button");
             waitForElement(driver, "bn").click();
 
-//            System.out.println("Clicking on Checkbox");
-//            waitForElement(driver, "ck").click();
+            System.out.println("Clicking on Checkbox");
+            waitForElement(driver, "ck").click();
 
             System.out.println("Clicking on RadioButton");
             waitForElement(driver, "rd").click();

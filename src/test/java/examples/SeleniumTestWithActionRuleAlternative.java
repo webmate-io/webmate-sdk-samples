@@ -23,18 +23,19 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static examples.MyCredentials.*;
+import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
  * This is an alternative to the Test shown in SeleniumTestWithActionRule.
  * Here, we use the .withAction-Wrapper zu combine Selenium commands to
  * named actions.
- *
+ * <p>
  * Also, in this sample you learn how to use StoryChecks to structure a
  * Selenium session based test.
- *
+ * <p>
  * Everything else is identical to SeleniumTestWithActionRule.
- *
+ * <p>
  * This class executes the same test as class SeleniumTest
  * but uses a Junit Rule to start and stop actions using
  * the webmate SDK. If at least one test method fails, the
@@ -51,7 +52,7 @@ import static org.junit.Assert.assertEquals;
  * with ClassRules and Test Suites.
  */
 @RunWith(JUnit4.class)
-public class SeleniumTestWithActionRuleAlternative extends Commons {
+public class SeleniumTestWithActionRuleAlternative {
 
     // Share the selenium driver between executions of tests
     private static RemoteWebDriver driver;
@@ -61,7 +62,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
         // create the selenium driver
         setupSeleniumSession(BrowserType.CHROME.toString(), "106", "WINDOWS_11_64");
 
-        // setup the webmate session
+        // set up the webmate session
         // if this call and the corresponding teardown call are removed, the selenium test executes just fine
         setupWebmateSession();
     }
@@ -77,7 +78,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
         }
     }
 
-    /** Utility method to setup the selenium driver. It uses plain Selenium and sets
+    /** Utility method to set up the selenium driver. It uses plain Selenium and sets
      *  some capabilities needed to connect to webmate.
      */
     private static void setupSeleniumSession(String browserName, String browserVersion,
@@ -113,7 +114,7 @@ public class SeleniumTestWithActionRuleAlternative extends Commons {
     }
 
     @Test
-    public void formularTest() {
+    public void formTest() {
         driver.get("http://www.examplepage.org/form_interaction");
 
         System.out.println("Click on link");

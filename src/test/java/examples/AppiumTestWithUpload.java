@@ -8,6 +8,8 @@ import examples.helpers.Helpers;
 import examples.helpers.WebElementFunction;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.android.AndroidDriver;
+import org.apache.commons.io.IOUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -22,9 +24,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 
-import static com.google.common.io.Resources.toByteArray;
 import static examples.MyCredentials.*;
+import static examples.helpers.Helpers.waitForElement;
 
 /**
  * NOTE: it is crucial to first run deployAndroidDeviceAndInstallApp() and then perform test.
@@ -35,8 +38,9 @@ import static examples.MyCredentials.*;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AppiumTestWithUpload extends Commons {
-    private WebmateAPISession webmateSession;
+public class AppiumTestWithUpload {
+    private static WebmateAPISession webmateSession;
+    private static DeviceDTO device;
 
     @Before
     public void setup() throws URISyntaxException {
@@ -50,43 +54,38 @@ public class AppiumTestWithUpload extends Commons {
 
 
     @Test
-    public void deployAndroidDeviceAndInstallApp() throws IOException, InterruptedException {
+    public void deployAndroidDeviceAndInstallApp() throws IOException {
         // request Android device
-        DeviceDTO device = webmateSession.device.requestDeviceByRequirements(WEBMATE_PROJECTID,
+        device = webmateSession.device.requestDeviceByRequirements(WEBMATE_PROJECTID,
                 new DeviceRequest("Sample Device",
                         new DeviceRequirements(
                                 ImmutableMap.of(
                                         DevicePropertyName.Model,  "Galaxy A52 5G",
                                         DevicePropertyName.AutomationAvailable, true))));
-        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
-        // Check if device has been deployed
-        Thread.sleep(6000);
 
-        byte[] apkData = toByteArray(this.getClass().getResource("sample.apk"));
+        webmateSession.device.waitForDeviceForAppInstallation(device.getId());
+
+        byte[] apkData = IOUtils.toByteArray(Objects.requireNonNull(this.getClass().getResource("sample.apk")));
 
         // Upload apk to webmate
         Package pkgInfo = webmateSession.packages.uploadApplicationPackage(WEBMATE_PROJECTID, apkData,
                 "Material example app", "apk");
-        // Wait until the package has been processed and is available. We are working on this issue to remove the sleep
-        // in the future.
-        Thread.sleep(3000);
+        pkgInfo = webmateSession.packages.waitForPackage(pkgInfo.getId());
 
         webmateSession.device.installAppOnDevice(device.getId(), pkgInfo.getId());
+
+        webmateSession.packages.deletePackage(pkgInfo.getId());
     }
 
 
     /**
      * Run deployAndroidDeviceAndInstallApp() before running this test!
-     * @throws MalformedURLException
-     * @throws URISyntaxException
-     * @throws InterruptedException
+     * @throws MalformedURLException if the supplied Selenium URL is malformed
      */
     @Test
-    public void performTest() throws MalformedURLException, URISyntaxException, InterruptedException {
+    public void performTest() throws MalformedURLException {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", "Appium");
-        caps.setCapability("version", "1.21.0");
-        caps.setCapability("platform", "Android_11");
         caps.setCapability("model", "Galaxy A52 5G");
 
         caps.setCapability("email", MyCredentials.WEBMATE_USERNAME);
@@ -99,15 +98,7 @@ public class AppiumTestWithUpload extends Commons {
         caps.setCapability("wm:name", "Demo Appium Test");
         caps.setCapability("wm:tags", "Sprint=22, Feature=DemoApp");
 
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
-        WebmateAPISession webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI(WEBMATE_API_URI)), WEBMATE_PROJECTID);
-
-        Thread.sleep(3000);
-
-        AndroidDriver driver = new AndroidDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
-        // Wait until the device is ready. We are working on this issue to remove the sleep in the future.
-        // Check if device has been deployed
-        Thread.sleep(3000);
+        AndroidDriver<?> driver = new AndroidDriver<>(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
 
         waitForElement(driver, "com.afollestad.materialdialogssample:id/basic_buttons")
                 .click();
@@ -115,7 +106,6 @@ public class AppiumTestWithUpload extends Commons {
         driver.findElement(MobileBy.AndroidUIAutomator("new UiSelector().textContains(\"" + "AGREE" + "\")"))
                 .click();
 
-        //WebElementFunction elem = () -> driver.findElement(MobileBy.AndroidUIAutomator("new UiSelector().textContains(\"LIST + TITLE + CHECKBOX PROMPT + BUTTONS\")"));
         WebElementFunction elem = () -> driver.findElement(MobileBy.AndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true))" +
                 ".scrollIntoView(new UiSelector().textContains(\"LIST + TITLE + CHECKBOX PROMPT + BUTTONS\"))"));
         System.out.println(elem.getElement());
@@ -130,4 +120,9 @@ public class AppiumTestWithUpload extends Commons {
         driver.quit();
     }
 
+
+    @AfterClass
+    public static void teardown() {
+        webmateSession.device.releaseDevice(device.getId());
+    }
 }

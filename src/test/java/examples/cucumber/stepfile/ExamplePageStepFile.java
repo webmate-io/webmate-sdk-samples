@@ -1,12 +1,10 @@
 package examples.cucumber.stepfile;
 
 import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRun;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
 import com.testfabrik.webmate.javasdk.testmgmt.TestSession;
 import com.testfabrik.webmate.javasdk.testmgmt.spec.StoryCheckSpec;
-import examples.MyCredentials;
 import examples.pages.ExamplePageFormInteraction;
 import io.cucumber.java8.En;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -17,23 +15,24 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import static examples.MyCredentials.*;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This is example step file for the toy page: http://www.examplepage.org/form_interaction
+ * This is example step file for the toy page: <a href="http://www.examplepage.org/form_interaction">examplepage.org</a>
  * The defined steps are referenced in the cucumber file example.feature.
- * The test executed on an iPhone XR in Safari. Make sure the device with the given specification is available in your
- * project. Otherwise customize the according capabilities.
- *
+ * The test executed  in Safari. Make sure a device with the given specification is available in your
+ * project. Otherwise, customize the according capabilities.
+ * <p>
  * See the cucumber documentation for more information about cucumber hooks and keywords:
- * - https://cucumber.io/docs/gherkin/reference/
- * - https://cucumber.io/docs/cucumber/api/#hooks
+ * - <a href="https://cucumber.io/docs/gherkin/reference/">Reference</a>
+ * - <a href="https://cucumber.io/docs/cucumber/api/#hooks">Cucumber API docs</a>
  */
+@SuppressWarnings("CodeBlock2Expr")
 public class ExamplePageStepFile implements En {
 
     private static RemoteWebDriver driver;
     private static WebmateAPISession webmateSession;
-    private static BrowserSessionRef browserSession;
     private static TestRun testRun;
     private static ExamplePageFormInteraction examplePage;
 
@@ -49,9 +48,9 @@ public class ExamplePageStepFile implements En {
 
     public ExamplePageStepFile() throws URISyntaxException {
 
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
-        webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI("https://app.webmate.io/api/v1")),
-                MyCredentials.WEBMATE_PROJECTID);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(WEBMATE_USERNAME, WEBMATE_APIKEY);
+        webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
+                WEBMATE_PROJECTID);
 
         webmateSession.addTag(new Tag("GIT", "2020-09-02"));
         webmateSession.addTag(new Tag("Product", "Unfall"));
@@ -64,23 +63,17 @@ public class ExamplePageStepFile implements En {
         DesiredCapabilities caps = new DesiredCapabilities();
 
         caps.setCapability("browserName", BrowserType.SAFARI);
-        caps.setCapability("version", "14");
-        caps.setCapability("platform", "iOS_14.2");
-        caps.setCapability("model", "iPhone XR");
-
-        caps.setCapability(WebmateCapabilityType.API_KEY, MyCredentials.WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, MyCredentials.WEBMATE_USERNAME);
-        caps.setCapability(WebmateCapabilityType.PROJECT, MyCredentials.WEBMATE_PROJECTID.toString());
+        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
+        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
+        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:video", true);
 
         Before(() -> {
             try {
-                driver = new RemoteWebDriver(new URL(MyCredentials.WEBMATE_SELENIUM_URL), caps);
+                driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
                 examplePage = new ExamplePageFormInteraction(driver);
                 webmateSession.addSeleniumSession(driver.getSessionId().toString());
-                browserSession = webmateSession.browserSession
-                        .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
                 testRun = webmateSession.testMgmt.startExecutionWithBuilder(
                         StoryCheckSpec.StoryCheckBuilder.builder("testIfInteractionPageIsTestable"));

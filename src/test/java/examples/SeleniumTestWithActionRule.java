@@ -12,8 +12,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.rules.TestWatcher;
 import org.junit.runners.model.Statement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
@@ -22,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static examples.MyCredentials.*;
+import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -41,7 +44,7 @@ import static org.junit.Assert.assertEquals;
  * with ClassRules and Test Suites.
  */
 @RunWith(JUnit4.class)
-public class SeleniumTestWithActionRule extends Commons {
+public class SeleniumTestWithActionRule {
 
     // Share the selenium driver between executions of tests
     private static RemoteWebDriver driver;
@@ -52,7 +55,7 @@ public class SeleniumTestWithActionRule extends Commons {
         Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
         setupSeleniumSession(BrowserType.CHROME.toString(), "106", platform.toString());
 
-        // setup the webmate session
+        // set up the webmate session
         // if this call and the corresponding teardown call are removed, the selenium test executes just fine
         setupWebmateSession();
     }
@@ -68,7 +71,7 @@ public class SeleniumTestWithActionRule extends Commons {
         }
     }
 
-    /** Utility method to setup the selenium driver. It uses plain Selenium and sets
+    /** Utility method to set up the selenium driver. It uses plain Selenium and sets
      *  some capabilities needed to connect to webmate.
      */
     private static void setupSeleniumSession(String browserName, String browserVersion,
@@ -93,7 +96,7 @@ public class SeleniumTestWithActionRule extends Commons {
 
         System.out.println("Selecting some elements....");
         WebDriverWait wait = new WebDriverWait(driver, 20);
-//        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".container"))).click();
 
         browserSession.createState("after click");
 
@@ -104,7 +107,7 @@ public class SeleniumTestWithActionRule extends Commons {
     }
 
     @Test
-    public void formularTest() {
+    public void formTest() {
         driver.get("http://www.examplepage.org/form_interaction");
 
         System.out.println("Click on link");
