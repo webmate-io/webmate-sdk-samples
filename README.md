@@ -51,6 +51,12 @@ the webmate demo themselves for the runtime of the tests.
     </tr>
     <tr>
         <td>
+            <a href="./src/test/java/examples/SeleniumTestScheduling.java">SeleniumTestScheduling</a>
+        </td>
+        <td>Selenium, JUnit</td>
+    </tr>
+    <tr>
+        <td>
             <a href="./src/test/java/examples/SeleniumTestWithActionRule.java">SeleniumTestWithActionRule</a>
         </td>
         <td>Selenium, JUnit</td>
