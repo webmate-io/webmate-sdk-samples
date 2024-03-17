@@ -1,12 +1,11 @@
 package examples;
 
+import com.google.common.collect.ImmutableMap;
 import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
 import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
 import com.testfabrik.webmate.javasdk.devices.*;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
-import examples.helpers.BrowserRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -52,8 +50,8 @@ public class SeleniumTestScheduling  {
 
     @Test
     public void performTest() throws MalformedURLException, InterruptedException {
-        Platform platform = new Platform(PlatformType.MACOS, "MONTEREY","64");
-        Browser browser = new Browser(BrowserType.SAFARI, "17", platform);
+        Platform platform = new Platform(PlatformType.WINDOWS, "11","64");
+        Browser browser = new Browser(BrowserType.CHROME, "121", platform);
         executeTest(browser);
     }
 
@@ -71,16 +69,18 @@ public class SeleniumTestScheduling  {
     public DeviceDTO scheduleDevice(String deviceName, Browser browser, int maxRetries) throws InterruptedException{
         DeviceDTO deviceDTO = null;
         String deviceState = "";
-        Map requirements = new HashMap();
-        BrowserRequest browserRequest = new BrowserRequest(browser);
-        requirements.put(DevicePropertyName.Platform, browserRequest.getPlatform());
-        requirements.put(DevicePropertyName.AutomationAvailable, true);
-        requirements.put(DevicePropertyName.Browsers, browserRequest);
+        String platform = browser.getPlatform().getPlatformType() + "_" + browser.getPlatform().getPlatformVersion() + "_" + browser.getPlatform().getPlatformArchitecture();
+        Map requirements = ImmutableMap.of(
+            DevicePropertyName.Platform, platform,
+            DevicePropertyName.AutomationAvailable, true,
+            DevicePropertyName.Browsers, ImmutableMap.of(
+                    "version", browser.getVersion(), "browserType", browser.getBrowserType()
+                ));
         DeviceRequest request = new DeviceRequest(deviceName, new DeviceRequirements(requirements));
 
         int retries = 0;
 
-        do {
+        while ((deviceDTO == null || !deviceState.equals("running")) && retries < maxRetries) {
             try {
                 System.out.println("Sending Request for Device");
                 deviceDTO = webmateSession.device.requestDeviceByRequirements(request);
@@ -95,7 +95,7 @@ public class SeleniumTestScheduling  {
                 TimeUnit.MINUTES.sleep(1); // Wait for a minute before retrying after an exception
                 retries++;
             }
-        } while ((deviceDTO == null || !deviceState.equals("running")) && retries < maxRetries);
+        }
 
         return deviceDTO;
     }
@@ -103,9 +103,9 @@ public class SeleniumTestScheduling  {
     public void executeTest(Browser browser) throws MalformedURLException, InterruptedException {
         // 1. Schedule device for test
         System.out.println("Scheduling test and wait for free device slot");
-
         DeviceDTO device = scheduleDevice("TestDevice", browser,5);
         if (device != null) {
+
             // 2. adding slotId to capabilities ensures that the freshly deployed device is used by the test
             DesiredCapabilities caps = getCapabilities(browser);
             caps.setCapability("wm:slot", device.getSlot().getValueAsString());
