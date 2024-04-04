@@ -25,11 +25,4 @@ public class MyCredentials {
     public static String WEBMATE_SELENIUM_URL = System.getProperty("wm_sdk_sample_selenium","https://app.webmate.io/wd/hub");
     public static String WEBMATE_API_URI = System.getProperty("wm_sdk_sample_api","https://app.webmate.io/api/v1");
 
-
-    /**
-     * These are the credentials with which you can use the SDK with the demo instance of webmate (https://demo.webmate.io).
-    **/
-    //public static String WEBMATE_SELENIUM_URL = "https://selenium-demo.webmate.io/wd/hub";
-    //public static String WEBMATE_API_URI = "https://demo.webmate.io/api/v1";
-
 }

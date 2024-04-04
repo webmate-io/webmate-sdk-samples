@@ -5,12 +5,8 @@ This repository contains examples of how to use the [webmate Java SDK](https://g
 ## Usage 
 
 To run the examples, add your webmate credentials in `MyCredentials.java` and follow the instructions there. 
-If you don't already have webmate credentials, you can sign up for demo credentials here: https://demo.webmate.io/#/login
 
-**Note:** It is recommended to start the tests individually via an IDE of your choice. https://demo.webmate.io/ is a 
-shared demo instance of Webmate with limited resources/device slots.
-Running all tests in bulk would result in other users not being able to deploy devices and thus not being able to use 
-the webmate demo themselves for the runtime of the tests.
+**Note:** It is recommended to start the tests individually via an IDE of your choice.
 
 ## Samples
 
