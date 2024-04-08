@@ -32,4 +32,6 @@ public class MyCredentials {
     //public static String WEBMATE_SELENIUM_URL = "https://selenium-demo.webmate.io/wd/hub";
     //public static String WEBMATE_API_URI = "https://demo.webmate.io/api/v1";
 
+
+
 }
