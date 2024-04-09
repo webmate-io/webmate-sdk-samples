@@ -73,7 +73,7 @@ public class DeployDeviceWithRequirements {
                         new DeviceRequirements(
                                 ImmutableMap.of(
                                         DevicePropertyName.Model,  "iPhone 11",
-                                        // DevicePropertyName.Language,  "Galaxy Tab A8",
+                                        // DevicePropertyName.Model,  "Galaxy Tab A8",
                                         DevicePropertyName.AutomationAvailable, true))));
     }
 
