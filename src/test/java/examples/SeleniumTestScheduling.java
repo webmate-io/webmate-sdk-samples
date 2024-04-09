@@ -53,26 +53,23 @@ public class SeleniumTestScheduling {
         deviceScheduler = new DeviceScheduler(webmateSession);
     }
 
-    private DesiredCapabilities getVMCapabilities(Browser browser) {
+
+
+    @Test
+    public void performTestVM() {
+        Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
+        Browser browser = new Browser(BrowserType.CHROME, "121", platform);
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", browser.getBrowserType().getValue());
         caps.setCapability("browserVersion", browser.getVersion());
         caps.setCapability("platformName", browser.getPlatform().toString());
         caps.setCapability("wm:apikey", WEBMATE_APIKEY);
         caps.setCapability("wm:project", WEBMATE_PROJECTID.toString());
-        return caps;
-    }
-
-    @Test
-    public void performTestVM() {
-        Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
-        Browser browser = new Browser(BrowserType.CHROME, "121", platform);
-
         // 1-3. Schedule VM and run test as usual
         RemoteWebDriver driver = null;
         WebmateSeleniumSession seleniumSession = null;
         try {
-            driver = (RemoteWebDriver) deviceScheduler.scheduleDevice("DeviceName", getVMCapabilities(browser), DeviceScheduler.DriverType.REMOTE, Duration.standardHours(2));
+            driver = (RemoteWebDriver) deviceScheduler.scheduleDevice("DeviceName", caps, DeviceScheduler.DriverType.REMOTE, Duration.standardHours(2));
             seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
             BrowserSessionRef browserSession = webmateSession.browserSession
                     .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
@@ -126,30 +123,22 @@ public class SeleniumTestScheduling {
         }
     }
 
-
-
-    private DesiredCapabilities getMobileCapabilites(String model) {
+    @Test
+    public void performTestMobile() throws MalformedURLException, InterruptedException {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", "Appium");
-        caps.setCapability("browserVersion", "1.22.3");
-        caps.setCapability("wm:model", model);
+        caps.setCapability("wm:model", "Galaxy A52 5G");
         caps.setCapability("email", MyCredentials.WEBMATE_USERNAME);
         caps.setCapability("apikey", MyCredentials.WEBMATE_APIKEY);
         caps.setCapability("project", MyCredentials.WEBMATE_PROJECTID.toString());
-        // For now, we can't ensure that a app is installed on the device using deviceRequirements.
+        // For now, we can't ensure that an app is installed on the device using deviceRequirements.
         // You need to make sure the apps are installed using wm:installPackage in the capabilities
         caps.setCapability("wm:installPackage", "a3xxxxxx-xxxx-xxxx-xxxx-xxxxxxxx9d04");
         caps.setCapability("wm:appPackage", "com.afollestad.materialdialogssample");
         caps.setCapability("wm:appActivity", "com.afollestad.materialdialogssample.MainActivity");
-        return caps;
-    }
-
-    @Test
-    public void performTestMobile() throws MalformedURLException, InterruptedException {
-        String model = "Galaxy A52 5G";
         AndroidDriver driver = null;
         try {
-            driver = (AndroidDriver<?>) deviceScheduler.scheduleDevice("TestDevice", getMobileCapabilites(model), DeviceScheduler.DriverType.ANDROID, Duration.standardHours(2));
+            driver = (AndroidDriver<?>) deviceScheduler.scheduleDevice("TestDevice", caps, DeviceScheduler.DriverType.ANDROID, Duration.standardHours(2));
             waitForElement(driver, "com.afollestad.materialdialogssample:id/basic_buttons")
                     .click();
 
