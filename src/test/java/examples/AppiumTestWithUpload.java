@@ -92,8 +92,8 @@ public class AppiumTestWithUpload {
         caps.setCapability("apikey", MyCredentials.WEBMATE_APIKEY);
         caps.setCapability("project", MyCredentials.WEBMATE_PROJECTID.toString());
 
-        caps.setCapability("appPackage", "com.afollestad.materialdialogssample");
-        caps.setCapability("appActivity", "com.afollestad.materialdialogssample.MainActivity");
+        caps.setCapability("appium:appPackage", "com.afollestad.materialdialogssample");
+        caps.setCapability("appium:appActivity", "com.afollestad.materialdialogssample.MainActivity");
         caps.setCapability("wm:video", true);
         caps.setCapability("wm:name", "Demo Appium Test");
         caps.setCapability("wm:tags", "Sprint=22, Feature=DemoApp");
