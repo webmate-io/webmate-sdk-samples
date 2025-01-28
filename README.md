@@ -17,9 +17,21 @@ To run the examples, add your webmate credentials in `MyCredentials.java` and fo
     </tr>
     <tr>
         <td>
-            <a href="./src/test/java/examples/cucumber/DemoCucumberTest.java">DemoCucumberTest</a>
+            <a href="./src/test/java/examples/AppiumTestWithUpload.java">AppiumTestWithUpload</a>
         </td>
-        <td>Cucumber, Selenium, JUnit</td>
+        <td>Appium, JUnit</td>
+    </tr>
+    <tr>
+        <td>
+            <a href="./src/test/java/examples/DeployDeviceWithRequirements.java">DeployDeviceWithRequirements</a>
+        </td>
+        <td>Selenium, JUnit</td>
+    </tr>
+    <tr>
+        <td>
+            <a href="./src/test/java/examples/UrlBasedLayoutComparisonTest.java">UrlBasedLayoutComparisonTest</a>
+        </td>
+        <td>Selenium, JUnit</td>
     </tr>
     <tr>
         <td>
