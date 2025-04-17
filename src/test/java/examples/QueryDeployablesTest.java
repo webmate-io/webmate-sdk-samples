@@ -28,7 +28,8 @@ import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Simple test showing how to perform a Selenium test using webmate.
+ * Simple test showing how to query available mobile devices given some basic requirements (e.g. platform, platformversion, browser),
+ * select one of those devices for a test and use it via slotId
  */
 @RunWith(JUnit4.class)
 public class QueryDeployablesTest {
@@ -47,8 +48,8 @@ public class QueryDeployablesTest {
     @Test
     public void performTest() throws MalformedURLException {
         webmateSession.device.getDeviceIdsForProject(WEBMATE_PROJECTID);
-        Set<DeviceOffer> deployables = webmateSession.device.queryDeployablesByRequirements("android", "10", "chrome");
-        executeTestInBrowser(deployables);
+        Set<DeviceOffer> deviceOffers = webmateSession.device.queryDeployablesByRequirements("android", "10", "chrome");
+        executeTestInBrowser(deviceOffers);
     }
 
     public static <T> T getRandomElementFromSet(Set<T> set) {
@@ -58,8 +59,8 @@ public class QueryDeployablesTest {
         return list.get(random.nextInt(list.size()));
     }
 
-    public void executeTestInBrowser(Set<DeviceOffer> deployables) throws MalformedURLException {
-        String slot = getRandomElementFromSet(deployables).getDeviceProperties().getSlotId();
+    public void executeTestInBrowser(Set<DeviceOffer> deviceOffers) throws MalformedURLException {
+        String slot = getRandomElementFromSet(deviceOffers).getDeviceProperties().getSlotId();
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("platformName", "android");
         caps.setCapability("email", MyCredentials.WEBMATE_USERNAME);

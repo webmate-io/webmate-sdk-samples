@@ -35,6 +35,12 @@ To run the examples, add your webmate credentials in `MyCredentials.java` and fo
     </tr>
     <tr>
         <td>
+            <a href="./src/test/java/examples/QueryDeployablesTest.java.java">QueryDeployablesTest</a>
+        </td>
+        <td>Selenium, JUnit</td>
+    </tr>
+    <tr>
+        <td>
             <a href="./src/test/java/examples/SeleniumBasedRegressionTest.java">SeleniumBasedRegressionTest</a>
         </td>
         <td>Selenium, JUnit</td>
