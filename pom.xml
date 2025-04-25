@@ -23,7 +23,7 @@
     <dependency>
       <groupId>com.testfabrik.webmate.sdk</groupId>
       <artifactId>java-sdk</artifactId>
-      <version>0.58</version>
+      <version>0.59</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
