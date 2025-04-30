@@ -22,7 +22,7 @@ public class MyCredentials {
     /**
      * These are the credentials with which you can use the SDK with app.webmate.io (https://app.webmate.io)
      */
-    public static String WEBMATE_SELENIUM_URL = System.getProperty("wm_sdk_sample_selenium","https://app.webmate.io/wd/hub");
+    public static String WEBMATE_SELENIUM_URL = System.getProperty("wm_sdk_sample_selenium","https://selenium.webmate.io/wd/hub");
     public static String WEBMATE_API_URI = System.getProperty("wm_sdk_sample_api","https://app.webmate.io/api/v1");
 
 }
