@@ -83,7 +83,7 @@ public class DeviceInteractionTest {
      * available), and installs the uploaded app onto the device.
      */
     @Test
-    public void installApp() throws IOException {
+    public void installApp() throws IOException, InterruptedException {
         // Read apk from classpath
         byte[] apkData = IOUtils.toByteArray(Objects.requireNonNull(this.getClass().getResource("sample.apk")));
 

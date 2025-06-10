@@ -54,7 +54,7 @@ public class AppiumTestWithUpload {
 
 
     @Test
-    public void deployAndroidDeviceAndInstallApp() throws IOException {
+    public void deployAndroidDeviceAndInstallApp() throws IOException, InterruptedException {
         // request Android device
         device = webmateSession.device.requestDeviceByRequirements(WEBMATE_PROJECTID,
                 new DeviceRequest("Sample Device",
