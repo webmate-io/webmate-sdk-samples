@@ -82,7 +82,6 @@ public class SeleniumTestWithActionRule {
         caps.setCapability("version", browserVersion);
         caps.setCapability("platform", browserPlatform);
         caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:autoScreenshots", true);
@@ -158,7 +157,7 @@ public class SeleniumTestWithActionRule {
 
     /** Authenticate with the webmate SDK and setup selenium and browsersessions */
     private static void setupWebmateSession() throws URISyntaxException {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
                 WebmateEnvironment.create(new URI(WEBMATE_API_URI)),

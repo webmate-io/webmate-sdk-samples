@@ -48,7 +48,7 @@ public class ExamplePageStepFile implements En {
 
     public ExamplePageStepFile() throws URISyntaxException {
 
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(WEBMATE_USERNAME, WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
                 WEBMATE_PROJECTID);
 
@@ -64,7 +64,6 @@ public class ExamplePageStepFile implements En {
 
         caps.setCapability("browserName", BrowserType.SAFARI);
         caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.USERNAME, WEBMATE_USERNAME);
         caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:video", true);

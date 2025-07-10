@@ -38,7 +38,7 @@ public class QueryDeployablesTest {
 
     @Before
     public void setup() throws URISyntaxException {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
                 WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
@@ -63,9 +63,8 @@ public class QueryDeployablesTest {
         String slot = getRandomElementFromSet(deviceOffers).getDeviceProperties().getSlotId();
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("platformName", "android");
-        caps.setCapability("email", MyCredentials.WEBMATE_USERNAME);
-        caps.setCapability("apikey", MyCredentials.WEBMATE_APIKEY);
-        caps.setCapability("project", WEBMATE_PROJECTID.toString());
+        caps.setCapability("wm:apikey", MyCredentials.WEBMATE_APIKEY);
+        caps.setCapability("wm:project", WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:slot", slot);
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
         WebmateSeleniumSession seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());

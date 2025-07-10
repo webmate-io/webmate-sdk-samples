@@ -7,13 +7,11 @@ import java.util.UUID;
 public class MyCredentials {
 
      /**
-     * Simply fill in the username, api key and project ID
+     * Simply fill in the api key and project ID
      * Details on how to get your API Key and Project ID can be found in the official webmate documentation.
      *         https://docs.webmate.io/reference/generate-api-key/?searchTerm=api
      * There is no need to change the Selenium URL or the webmate API URI
      **/
-    // fill in
-    public static String WEBMATE_USERNAME = System.getProperty("wm_sdk_sample_user","xxxx@xxxxxxxxx.com");
     // fill in
     public static String WEBMATE_APIKEY = System.getProperty("wm_sdk_sample_apikey","xxxxxxxx-xxxx-4f6d-xxxx-xxxxxxxxxxxx");
     // fill in
