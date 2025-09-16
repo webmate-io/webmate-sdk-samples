@@ -39,7 +39,7 @@ public class ProxyTest {
 //        WebmateAPISession apiSession = sessionWithAuthProxyUsernamePassword(new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY),
 //                WebmateEnvironment.create(new URI(WEBMATE_API_URI)), PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD);
 
-        WebmateAPISession apiSession = sessionWithAuthProxyNTLM(new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY),
+        WebmateAPISession apiSession = sessionWithAuthProxyNTLM(new WebmateAuthInfo(MyCredentials.WEBMATE_APIKEY),
                 WebmateEnvironment.create(new URI(WEBMATE_API_URI)), PROXY_HOST, PROXY_PORT, PROXY_USER_DOMAIN, PROXY_USER, PROXY_PASSWORD);
 
         apiSession.device.getDeviceIdsForProject(MyCredentials.WEBMATE_PROJECTID);

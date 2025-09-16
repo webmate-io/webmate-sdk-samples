@@ -32,7 +32,7 @@ public class DeviceInteractionTest {
 
     @Before
     public void setup() throws URISyntaxException {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
                 WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
@@ -83,7 +83,7 @@ public class DeviceInteractionTest {
      * available), and installs the uploaded app onto the device.
      */
     @Test
-    public void installApp() throws IOException {
+    public void installApp() throws IOException, InterruptedException {
         // Read apk from classpath
         byte[] apkData = IOUtils.toByteArray(Objects.requireNonNull(this.getClass().getResource("sample.apk")));
 

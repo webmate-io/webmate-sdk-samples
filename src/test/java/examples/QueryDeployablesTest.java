@@ -1,9 +1,12 @@
 package examples;
 
-import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.browsersession.*;
+import com.testfabrik.webmate.javasdk.WebmateAPISession;
+import com.testfabrik.webmate.javasdk.WebmateAuthInfo;
+import com.testfabrik.webmate.javasdk.WebmateEnvironment;
+import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
+import com.testfabrik.webmate.javasdk.devices.DeviceOffer;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
-import com.testfabrik.webmate.javasdk.testmgmt.*;
+import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,16 +18,21 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import static examples.MyCredentials.*;
 import static examples.helpers.Helpers.waitForElement;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Simple test showing how to perform a Selenium test using webmate.
+ * Simple test showing how to query available mobile devices given some basic requirements (e.g. platform, platformversion, browser),
+ * select one of those devices for a test and use it via slotId
  */
 @RunWith(JUnit4.class)
-public class SeleniumTest {
+public class QueryDeployablesTest {
 
     private WebmateAPISession webmateSession;
 
@@ -39,42 +47,31 @@ public class SeleniumTest {
 
     @Test
     public void performTest() throws MalformedURLException {
-        Platform platform = new Platform(PlatformType.WINDOWS, "11", "64");
-        Browser browser = new Browser(BrowserType.FIREFOX, "106", platform);
-        executeTestInBrowser(browser);
+        webmateSession.device.getDeviceIdsForProject(WEBMATE_PROJECTID);
+        Set<DeviceOffer> deviceOffers = webmateSession.device.queryDeployablesByRequirements("android", "10", "chrome");
+        executeTestInBrowser(deviceOffers);
     }
 
-    private DesiredCapabilities getCapabilities(Browser browser) {
+    public static <T> T getRandomElementFromSet(Set<T> set) {
+        if (set.isEmpty()) return null;
+        List<T> list = new ArrayList<>(set);
+        Random random = new Random();
+        return list.get(random.nextInt(list.size()));
+    }
+
+    public void executeTestInBrowser(Set<DeviceOffer> deviceOffers) throws MalformedURLException {
+        String slot = getRandomElementFromSet(deviceOffers).getDeviceProperties().getSlotId();
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("browserName", browser.getBrowserType().getValue());
-        caps.setCapability("version", browser.getVersion());
-        caps.setCapability("platform", browser.getPlatform().toString());
-        caps.setCapability(WebmateCapabilityType.API_KEY, WEBMATE_APIKEY);
-        caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
-        // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
-        // caps.setCapability("wm:autoScreenshots", true);
-        caps.setCapability("wm:name", "A sample selenium test");
-        caps.setCapability("wm:tags", "Sprint=34, Hello World");
-
-        return caps;
-    }
-
-    public void executeTestInBrowser(Browser browser) throws MalformedURLException {
-        System.out.println("Starting test for " + browser.getBrowserType() + " " + browser.getVersion() + " on " + browser.getPlatform());
-        DesiredCapabilities caps = getCapabilities(browser);
+        caps.setCapability("platformName", "android");
+        caps.setCapability("wm:apikey", MyCredentials.WEBMATE_APIKEY);
+        caps.setCapability("wm:project", WEBMATE_PROJECTID.toString());
+        caps.setCapability("wm:slot", slot);
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
         WebmateSeleniumSession seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
         BrowserSessionRef browserSession = webmateSession.browserSession
                 .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
         try {
-            driver.get("http://www.examplepage.org/version/future/");
-            browserSession.createState("start");
-
-            System.out.println("Clicking on something that will redirect us...");
-            waitForElement(driver, "goto-examplepage").click();
-            assertEquals("Cross Browser Issues Example", driver.getTitle());
-
             driver.get("http://www.examplepage.org/form_interaction");
 
             System.out.println("Click on link");

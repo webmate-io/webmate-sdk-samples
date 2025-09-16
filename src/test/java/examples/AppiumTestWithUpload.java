@@ -44,7 +44,7 @@ public class AppiumTestWithUpload {
 
     @Before
     public void setup() throws URISyntaxException {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
                 WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
@@ -54,7 +54,7 @@ public class AppiumTestWithUpload {
 
 
     @Test
-    public void deployAndroidDeviceAndInstallApp() throws IOException {
+    public void deployAndroidDeviceAndInstallApp() throws IOException, InterruptedException {
         // request Android device
         device = webmateSession.device.requestDeviceByRequirements(WEBMATE_PROJECTID,
                 new DeviceRequest("Sample Device",
@@ -86,11 +86,10 @@ public class AppiumTestWithUpload {
     public void performTest() throws MalformedURLException {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", "Appium");
-        caps.setCapability("model", "Galaxy A52 5G");
+        caps.setCapability("wm:model", "Galaxy A52 5G");
 
-        caps.setCapability("email", MyCredentials.WEBMATE_USERNAME);
-        caps.setCapability("apikey", MyCredentials.WEBMATE_APIKEY);
-        caps.setCapability("project", MyCredentials.WEBMATE_PROJECTID.toString());
+        caps.setCapability("wm:apikey", MyCredentials.WEBMATE_APIKEY);
+        caps.setCapability("wm:project", MyCredentials.WEBMATE_PROJECTID.toString());
 
         caps.setCapability("appium:appPackage", "com.afollestad.materialdialogssample");
         caps.setCapability("appium:appActivity", "com.afollestad.materialdialogssample.MainActivity");

@@ -36,7 +36,7 @@ public class DeployDeviceWithRequirements {
 
     @Before
     public void setup() throws URISyntaxException {
-        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY);
+        WebmateAuthInfo authInfo = new WebmateAuthInfo(MyCredentials.WEBMATE_APIKEY);
         webmateSession = new WebmateAPISession(
                 authInfo,
                 WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
