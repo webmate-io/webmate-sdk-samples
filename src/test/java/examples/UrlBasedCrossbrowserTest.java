@@ -41,8 +41,8 @@ public class UrlBasedCrossbrowserTest {
 
         // Specify the browsers that should be compared to the reference browser
         List<Browser> crossBrowsers = ImmutableList.of(
-                new Browser(BrowserType.CHROME, "106", new Platform(PlatformType.WINDOWS, "11", "64")),
-                new Browser(BrowserType.INTERNET_EXPLORER, "11", new Platform(PlatformType.WINDOWS, "11", "64"))
+                new Browser(BrowserType.CHROME, "106", new Platform(PlatformType.WINDOWS, "11", "64"))
+                //new Browser(BrowserType.EDGE, "106", new Platform(PlatformType.WINDOWS, "11", "64"))
         );
 
         // Specify the urls under test
