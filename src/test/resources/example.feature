@@ -1,3 +1,4 @@
+# docs:start feature
 Feature: Click through example page
 
   Scenario: Click through page
@@ -11,3 +12,4 @@ Feature: Click through example page
     And she enters input into the input field
     And she enters input into the text area
     Then the test was successful
+# docs:end feature

@@ -57,8 +57,10 @@ public class ExamplePageStepFile implements En {
         webmateSession.addTag(new Tag("DBBackend", "red"));
         webmateSession.addTag(new Tag("Sprint", "21"));
 
+        // docs:start testsession
         TestSession session = webmateSession.testMgmt.createTestSession("Example Test Session");
         webmateSession.addToTestSession(session.getId());
+        // docs:end testsession
 
         DesiredCapabilities caps = new DesiredCapabilities();
 
@@ -68,23 +70,28 @@ public class ExamplePageStepFile implements En {
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         caps.setCapability("wm:video", true);
 
+        // docs:start before-hook
         Before(() -> {
             try {
                 driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
                 examplePage = new ExamplePageFormInteraction(driver);
                 webmateSession.addSeleniumSession(driver.getSessionId().toString());
 
+                // docs:start start
                 testRun = webmateSession.testMgmt.startExecutionWithBuilder(
                         StoryCheckSpec.StoryCheckBuilder.builder("testIfInteractionPageIsTestable"));
+                // docs:end start
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
         });
+        // docs:end before-hook
 
         Given("the examplepage has been opened", () -> {
             driver.get("http://www.examplepage.org/form_interaction");
         });
 
+        // docs:start step-with-action
         When("the user clicks on 'link click'", () -> {
             try {
                 webmateSession.startAction("the user clicks on 'link click'");
@@ -94,6 +101,7 @@ public class ExamplePageStepFile implements En {
                 onFailure(e, true);
             }
         });
+        // docs:end step-with-action
 
         Then("{string} text box should be visible", (String msg) -> {
             String sucText = examplePage.getSuccessBoxText();
@@ -153,12 +161,16 @@ public class ExamplePageStepFile implements En {
         });
 
         Then("the test was successful", () -> {
+            // docs:start finish
             testRun.finish(TestRunEvaluationStatus.PASSED);
+            // docs:end finish
         });
 
+        // docs:start after-hook
         After(() -> {
             driver.quit();
         });
+        // docs:end after-hook
 
     }
 }
