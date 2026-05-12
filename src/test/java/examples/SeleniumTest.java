@@ -68,8 +68,10 @@ public class SeleniumTest {
                 .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
         try {
+            // docs:start state
             driver.get("http://www.examplepage.org/version/future/");
             browserSession.createState("start");
+            // docs:end state
 
             System.out.println("Clicking on something that will redirect us...");
             waitForElement(driver, "goto-examplepage").click();
@@ -83,22 +85,26 @@ public class SeleniumTest {
 
             browserSession.createState("after link");
 
+            // docs:start action-pair
             browserSession.startAction("Click on button");
             System.out.println("Clicking on Button");
             waitForElement(driver, "bn").click();
             browserSession.finishAction();
+            // docs:end action-pair
 
             browserSession.startAction("Click on Checkbox");
             System.out.println("Clicking on Checkbox");
             waitForElement(driver, "ck").click();
             browserSession.finishAction();
 
+            // docs:start nested
             browserSession.startAction("Click on Radiobutton");
             System.out.println("Clicking on RadioButton");
             waitForElement(driver, "rd").click();
 
             browserSession.createState("after radio button");
             browserSession.finishAction("was successful");
+            // docs:end nested
 
             System.out.println("Clicking on Element with a Hover Event");
             waitForElement(driver, "mover").click();
