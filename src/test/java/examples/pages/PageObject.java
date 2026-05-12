@@ -2,6 +2,7 @@ package examples.pages;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+// docs:start base
 public abstract class PageObject {
 
     private final RemoteWebDriver driver;
@@ -15,3 +16,4 @@ public abstract class PageObject {
     }
 
 }
+// docs:end base

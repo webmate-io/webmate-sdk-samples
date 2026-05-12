@@ -90,6 +90,7 @@ public class SeleniumBasedRegressionTest {
         return new BrowserSessionId(UUID.fromString(browserSessionIdStr));
     }
 
+    // docs:start save-reference
     private void saveReferenceSessionId(BrowserSessionId expeditionId) throws IOException {
         String home = System.getProperty("user.home");
         File file = new File(home + "/" + REFERENCE_FILENAME);
@@ -97,6 +98,7 @@ public class SeleniumBasedRegressionTest {
         writer.write(expeditionId.getValueAsString());
         writer.close();
     }
+    // docs:end save-reference
 
 
     public void createExpeditionReference() throws IOException {
@@ -104,6 +106,7 @@ public class SeleniumBasedRegressionTest {
         saveReferenceSessionId(referenceExpedition);
     }
 
+    // docs:start load-and-compare
     @Test
     public void createExpeditionAndCompareWithReference() throws IOException {
         BrowserSessionId compareExpeditionId = executeTest();
@@ -121,6 +124,7 @@ public class SeleniumBasedRegressionTest {
         System.out.println("The result is available at: https://app.webmate.io/#/projects/" +
                 testRunInfo.getProjectId().toString() + "/testlab/testruns/" + testRunInfo.getTestRunId());
     }
+    // docs:end load-and-compare
 
 
     /**

@@ -51,6 +51,7 @@ public class UrlBasedCrossbrowserTest {
                 URI.create("http://www.examplepage.org")
         );
 
+        // docs:start run-tag
         TestRun testRun = webmateSession.testMgmt.startExecutionWithBuilder(
                 ExpeditionComparisonSpec.ExpeditionComparisonCheckBuilder.builder(
                         "CrossBrowser Test via SDK",
@@ -60,6 +61,7 @@ public class UrlBasedCrossbrowserTest {
                                 .collect(Collectors.toList())
                 ).withTag("SDK").withTag("Release", "2020-11")
         );
+        // docs:end run-tag
 
         TestRunInfo info = testRun.waitForCompletion();
 

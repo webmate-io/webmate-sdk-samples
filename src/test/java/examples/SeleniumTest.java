@@ -53,8 +53,10 @@ public class SeleniumTest {
         caps.setCapability(WebmateCapabilityType.PROJECT, WEBMATE_PROJECTID.toString());
         // See com.testfabrik.webmate.javasdk.WebmateCapabilityType for webmate specific capabilities
         // caps.setCapability("wm:autoScreenshots", true);
+        // docs:start capability-tag
         caps.setCapability("wm:name", "A sample selenium test");
         caps.setCapability("wm:tags", "Sprint=34, Hello World");
+        // docs:end capability-tag
 
         return caps;
     }

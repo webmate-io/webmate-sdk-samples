@@ -52,10 +52,12 @@ public class ExamplePageStepFile implements En {
         webmateSession = new WebmateAPISession(authInfo, WebmateEnvironment.create(new URI(WEBMATE_API_URI)),
                 WEBMATE_PROJECTID);
 
+        // docs:start session-tag
         webmateSession.addTag(new Tag("GIT", "2020-09-02"));
         webmateSession.addTag(new Tag("Product", "Unfall"));
         webmateSession.addTag(new Tag("DBBackend", "red"));
         webmateSession.addTag(new Tag("Sprint", "21"));
+        // docs:end session-tag
 
         // docs:start testsession
         TestSession session = webmateSession.testMgmt.createTestSession("Example Test Session");

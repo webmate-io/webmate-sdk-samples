@@ -35,6 +35,7 @@ public class UrlBasedLayoutComparisonTest {
     private WebmateAPISession webmateSession;
     private TestSession testSession;
 
+    // docs:start urls
     private static final List<String> referenceUrls = Arrays.asList(
             "http://examplepage.org/index.html",
             "http://examplepage.org/version/current"
@@ -44,6 +45,7 @@ public class UrlBasedLayoutComparisonTest {
             "http://examplepage.org/index_alternative.html",
             "http://examplepage.org/version/future"
     );
+    // docs:end urls
 
     @Before
     public void setup() throws URISyntaxException {
@@ -54,6 +56,7 @@ public class UrlBasedLayoutComparisonTest {
                 WEBMATE_PROJECTID);
     }
 
+    // docs:start compare
     @Test
     public void performTest() throws MalformedURLException {
 
@@ -82,10 +85,12 @@ public class UrlBasedLayoutComparisonTest {
         System.out.println("The result is available at: https://app.webmate.io/#/projects/" +
                 testRunInfo.getProjectId().toString() + "/testlab/testruns/" + testRunInfo.getTestRunId());
     }
+    // docs:end compare
 
     /**
      * Execute selenium session and collect layout data.
      */
+    // docs:start walk-urls
     public BrowserSessionId executeTestInBrowser(List<String> urls, Browser browser) throws MalformedURLException {
 
         DesiredCapabilities caps = new DesiredCapabilities();
@@ -117,4 +122,5 @@ public class UrlBasedLayoutComparisonTest {
 
         return browserSession.browserSessionId;
     }
+    // docs:end walk-urls
 }

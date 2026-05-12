@@ -66,6 +66,7 @@ public class SeleniumTestScheduling  {
         return caps;
     }
 
+    // docs:start schedule
     public DeviceDTO scheduleDevice(String deviceName, Browser browser, int maxRetries) throws InterruptedException{
         DeviceDTO deviceDTO = null;
         String deviceState = "";
@@ -99,6 +100,7 @@ public class SeleniumTestScheduling  {
 
         return deviceDTO;
     }
+    // docs:end schedule
 
     public void executeTest(Browser browser) throws MalformedURLException, InterruptedException {
         // 1. Schedule device for test
@@ -106,12 +108,14 @@ public class SeleniumTestScheduling  {
         DeviceDTO device = scheduleDevice("TestDevice", browser,5);
         if (device != null) {
 
+            // docs:start pin-slot
             // 2. adding slotId to capabilities ensures that the freshly deployed device is used by the test
             DesiredCapabilities caps = getCapabilities(browser);
             caps.setCapability("wm:slot", device.getSlot().getValueAsString());
 
             // 3. run test as usual
             RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
+            // docs:end pin-slot
             WebmateSeleniumSession seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
             BrowserSessionRef browserSession = webmateSession.browserSession
                     .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
@@ -155,11 +159,13 @@ public class SeleniumTestScheduling  {
             } catch (Throwable e) {
                 seleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
                 e.printStackTrace();
+            // docs:start release
             } finally {
                 driver.quit();
                 // 4. important -> release the device when the test is done or fails
                 webmateSession.device.releaseDevice(device.getId());
             }
+            // docs:end release
         }
 
     }

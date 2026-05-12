@@ -55,6 +55,7 @@ public class AppiumTestWithUpload {
 
     @Test
     public void deployAndroidDeviceAndInstallApp() throws IOException, InterruptedException {
+        // docs:start request-device
         // request Android device
         device = webmateSession.device.requestDeviceByRequirements(WEBMATE_PROJECTID,
                 new DeviceRequest("Sample Device",
@@ -64,17 +65,22 @@ public class AppiumTestWithUpload {
                                         DevicePropertyName.AutomationAvailable, true))));
 
         webmateSession.device.waitForDeviceForAppInstallation(device.getId());
+        // docs:end request-device
 
+        // docs:start upload-apk
         byte[] apkData = IOUtils.toByteArray(Objects.requireNonNull(this.getClass().getResource("sample.apk")));
 
         // Upload apk to webmate
         Package pkgInfo = webmateSession.packages.uploadApplicationPackage(WEBMATE_PROJECTID, apkData,
                 "Material example app", "apk");
         pkgInfo = webmateSession.packages.waitForPackage(pkgInfo.getId());
+        // docs:end upload-apk
 
+        // docs:start install
         webmateSession.device.installAppOnDevice(device.getId(), pkgInfo.getId());
 
         webmateSession.packages.deletePackage(pkgInfo.getId());
+        // docs:end install
     }
 
 
@@ -82,6 +88,7 @@ public class AppiumTestWithUpload {
      * Run deployAndroidDeviceAndInstallApp() before running this test!
      * @throws MalformedURLException if the supplied Selenium URL is malformed
      */
+    // docs:start appium-drive
     @Test
     public void performTest() throws MalformedURLException {
         DesiredCapabilities caps = new DesiredCapabilities();
@@ -118,10 +125,13 @@ public class AppiumTestWithUpload {
         btn.click();
         driver.quit();
     }
+    // docs:end appium-drive
 
 
+    // docs:start release
     @AfterClass
     public static void teardown() {
         webmateSession.device.releaseDevice(device.getId());
     }
+    // docs:end release
 }

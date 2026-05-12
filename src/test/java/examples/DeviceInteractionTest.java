@@ -118,10 +118,12 @@ public class DeviceInteractionTest {
 
         device = webmateSession.device.waitForDevice(device.getId());
 
+        // docs:start upload-image
         // Upload QR code image and push it to the device
         byte[] qrCode = IOUtils.toByteArray(Objects.requireNonNull(this.getClass().getResource("qrcode.png")));
         webmateSession.device.uploadImageToDeviceAndSetForCameraSimulation(WEBMATE_PROJECTID, qrCode, "MyQRCode",
                 ImageType.PNG, device.getId());
+        // docs:end upload-image
 
     }
 

@@ -48,18 +48,23 @@ public class QueryDeployablesTest {
     @Test
     public void performTest() throws MalformedURLException {
         webmateSession.device.getDeviceIdsForProject(WEBMATE_PROJECTID);
+        // docs:start query
         Set<DeviceOffer> deviceOffers = webmateSession.device.queryDeployablesByRequirements("android", "10", "chrome");
+        // docs:end query
         executeTestInBrowser(deviceOffers);
     }
 
+    // docs:start pick
     public static <T> T getRandomElementFromSet(Set<T> set) {
         if (set.isEmpty()) return null;
         List<T> list = new ArrayList<>(set);
         Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }
+    // docs:end pick
 
     public void executeTestInBrowser(Set<DeviceOffer> deviceOffers) throws MalformedURLException {
+        // docs:start run
         String slot = getRandomElementFromSet(deviceOffers).getDeviceProperties().getSlotId();
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("platformName", "android");
@@ -67,6 +72,7 @@ public class QueryDeployablesTest {
         caps.setCapability("wm:project", WEBMATE_PROJECTID.toString());
         caps.setCapability("wm:slot", slot);
         RemoteWebDriver driver = new RemoteWebDriver(new URL(WEBMATE_SELENIUM_URL), caps);
+        // docs:end run
         WebmateSeleniumSession seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
         BrowserSessionRef browserSession = webmateSession.browserSession
                 .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());

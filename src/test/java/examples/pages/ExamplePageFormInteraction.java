@@ -5,6 +5,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static examples.helpers.Helpers.waitForElement;
 
+// docs:start page
 public class ExamplePageFormInteraction extends PageObject {
 
     public ExamplePageFormInteraction(RemoteWebDriver driver) {
@@ -46,3 +47,4 @@ public class ExamplePageFormInteraction extends PageObject {
     }
 
 }
+// docs:end page
