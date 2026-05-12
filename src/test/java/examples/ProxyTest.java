@@ -27,11 +27,13 @@ public class ProxyTest {
     @Test
     public void testSdkWithProxy() throws URISyntaxException {
 
+        // docs:start credentials
         String PROXY_HOST = "localhost";
         int PROXY_PORT = 3128;
         String PROXY_USER_DOMAIN = "user-domain";
         String PROXY_USER = "proxy-user";
         String PROXY_PASSWORD = "proxy-password";
+        // docs:end credentials
 
 //        WebmateAPISession apiSession = sessionWithNoAuthProxy(new WebmateAuthInfo(MyCredentials.WEBMATE_USERNAME, MyCredentials.WEBMATE_APIKEY),
 //                WebmateEnvironment.create(new URI(WEBMATE_API_URI)), PROXY_HOST, PROXY_PORT);
@@ -51,7 +53,9 @@ public class ProxyTest {
         HttpClientBuilder builder = HttpClientBuilder.create();
         HttpHost proxy = new HttpHost(proxyHost, proxyPort);
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        // docs:start userpass
         credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(proxyUser, proxyPassword));
+        // docs:end userpass
         builder.setProxy(proxy);
         builder.setDefaultCredentialsProvider(credsProvider);
         return new WebmateAPISession(authInfo, env, builder);
@@ -65,11 +69,13 @@ public class ProxyTest {
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         URI apiUrl = env.baseURI;
 
+        // docs:start ntlm-credentials
         credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), new NTCredentials(proxyUser, proxyPassword, getWorkstation(), proxyUserDomain));
         if (apiUrl.getUserInfo() != null && !apiUrl.getUserInfo().isEmpty()) {
             credsProvider.setCredentials(new AuthScope(apiUrl.getHost(), apiUrl.getPort() > 0 ? apiUrl.getPort() : 443),
                     new UsernamePasswordCredentials(apiUrl.getUserInfo()));
         }
+        // docs:end ntlm-credentials
         builder.setProxy(proxy);
         builder.setDefaultCredentialsProvider(credsProvider);
         return new WebmateAPISession(authInfo, env, builder);
@@ -77,10 +83,12 @@ public class ProxyTest {
 
     @SuppressWarnings("unused")
     public WebmateAPISession sessionWithNoAuthProxy(WebmateAuthInfo authInfo, WebmateEnvironment env, String proxyHost, int proxyPort) {
+        // docs:start httpclient
         HttpClientBuilder builder = HttpClientBuilder.create();
         HttpHost proxy = new HttpHost(proxyHost, proxyPort);
         builder.setProxy(proxy);
         return new WebmateAPISession(authInfo, env, builder);
+        // docs:end httpclient
     }
 
     private String getWorkstation() {
