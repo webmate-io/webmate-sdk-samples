@@ -49,6 +49,7 @@ public class SeleniumTestWithActionRule {
     // Share the selenium driver between executions of tests
     private static RemoteWebDriver driver;
 
+    // docs:start setup
     @BeforeClass
     public static void setup() throws MalformedURLException, URISyntaxException {
         // create the selenium driver
@@ -59,7 +60,9 @@ public class SeleniumTestWithActionRule {
         // if this call and the corresponding teardown call are removed, the selenium test executes just fine
         setupWebmateSession();
     }
+    // docs:end setup
 
+    // docs:start teardown
     @AfterClass
     public static void tearDown() {
         try {
@@ -70,6 +73,7 @@ public class SeleniumTestWithActionRule {
             driver.quit();
         }
     }
+    // docs:end teardown
 
     /** Utility method to set up the selenium driver. It uses plain Selenium and sets
      *  some capabilities needed to connect to webmate.
@@ -105,6 +109,7 @@ public class SeleniumTestWithActionRule {
 
     }
 
+    // docs:start test-method
     @Test
     public void formTest() {
         driver.get("http://www.examplepage.org/form_interaction");
@@ -144,6 +149,7 @@ public class SeleniumTestWithActionRule {
         waitForElement(driver, "area").sendKeys("Here some more test");
 
     }
+    // docs:end test-method
 
     /** ============= Code that interacts with the webmate SDK =============== */
 
@@ -186,6 +192,7 @@ public class SeleniumTestWithActionRule {
      *  Depending on how fine-grained the tests are this implementation
      *  could also create and finish Story-Checks instead of Actions.
      */
+    // docs:start action-rule
     @Rule
     public final TestRule actionRule = new TestWatcher() {
         @Override
@@ -209,5 +216,6 @@ public class SeleniumTestWithActionRule {
             webmateSession.startAction(description.getDisplayName());
         }
     };
+    // docs:end action-rule
 
 }
